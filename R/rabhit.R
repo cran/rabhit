@@ -1,0 +1,73 @@
+# rabhit package documentation and import directives
+
+#' The RAbHIT package
+#'
+#' The \code{rabhit} package provides a robust novel method for determining
+#' antibody heavy and light chain haplotypes by adapting a Bayesian framework.
+#' The key functions in \code{rabhit}, broken down by topic, are
+#' described below.
+#'
+#'
+#' @section  Haplotype and deletions inference:
+#' \code{rabhit} provides tools to infer haplotypes based on given anchor genes,
+#' deletion detection based on relative gene usage, pooling v genes, and a single anchor gene.
+#'
+#' \itemize{
+#'   \item  \link{createFullHaplotype}:      Haplotypes inference and single chromosome deletions based on an anchor gene.
+#'   \item  \link{deletionsByVpooled}:       Single chromosomal deletion detection by pooling V genes.
+#'   \item  \link{deletionsByBinom}:         Single chromosomal deletion detection by pooling V genes.
+#'   \item  \link{nonReliableVGenes}:        Non reliable gene assignment detection.
+#' }
+#'
+#' @section  Haplotype and deletions visualization:
+#' Functions for visualization of the inferred haplotypes and deletions
+#'
+#' \itemize{
+#'   \item  \link{plotHaplotype}:            Haplotype inference map.
+#'   \item  \link{deletionHeatmap}:          Single chromosome deletions heatmap.
+#'   \item  \link{hapHeatmap}:               Chromosome comparison of multiple samples.
+#'   \item  \link{hapDendo}:                 Hierarchical clustering of multiple haplotypes based on Jaccard distance.
+#'   \item  \link{plotDeletionsByVpooled}:   V pooled based single chromosome deletions heatmap.
+#'   \item  \link{plotDeletionsByBinom}:     Double chromosome deletions heatmap.
+#' }
+#'
+#' @name     rabhit
+#' @docType  package
+#' @references
+#' \enumerate{
+#'   \item  Gidoni, M., Snir, O., Peres, A., Polak, P., Lindeman, I., Mikocziova, I., . . . Yaari, G. (2019).
+#'   Mosaic deletion patterns of the human antibody heavy chain gene locus shown by Bayesian haplotyping.
+#'   Nature Communications, 10(1). doi:10.1038/s41467-019-08489-3
+#'  }
+#'
+#' @import   ggplot2
+#' @import   graphics
+#' @import   methods
+#' @import   utils
+#' @import   dendextend
+#' @importFrom  cowplot      get_legend plot_grid ggdraw draw_label background_grid
+#' @importFrom  gridExtra    arrangeGrob
+#' @importFrom  plotly       ggplotly subplot
+#' @importFrom  dplyr        do n desc funs %>%
+#'                           as_data_frame data_frame data_frame_
+#'                           bind_cols bind_rows combine rowwise slice
+#'                           filter filter_ select select_ arrange arrange_
+#'                           group_by group_by_ ungroup
+#'                           mutate mutate_ summarize summarize_
+#'                           mutate_at summarize_at count_ count
+#'                           rename rename_ transmute transmute_ pull ungroup row_number
+#' @importFrom  data.table   := rbindlist
+#' @importFrom  reshape2     melt
+#' @importFrom  gtools       ddirichlet
+#' @importFrom  stats        hclust as.dendrogram as.dist binom.test p.adjust setNames weighted.mean
+#' @importFrom  ggdendro     dendro_data segment
+#' @importFrom  htmlwidgets  saveWidget
+#' @importFrom  gtable       gtable_filter
+#' @importFrom  grDevices    dev.off pdf
+#' @importFrom  alakazam     getGene
+#' @importFrom  rlang        .data
+#' @importFrom  tigger       sortAlleles
+#' @importFrom  RColorBrewer brewer.pal
+#' @importFrom  tidyr        separate_rows
+NULL
+
