@@ -19,7 +19,7 @@ deletion detection based on relative gene usage, pooling v genes, and a single a
 \itemize{
   \item  \link{createFullHaplotype}:      Haplotypes inference and single chromosome deletions based on an anchor gene.
   \item  \link{deletionsByVpooled}:       Single chromosomal deletion detection by pooling V genes.
-  \item  \link{deletionsByBinom}:         Single chromosomal deletion detection by pooling V genes.
+  \item  \link{deletionsByBinom}:         Double chromosomal deletion detection by relative gene usage.
   \item  \link{nonReliableVGenes}:        Non reliable gene assignment detection.
 }
 }

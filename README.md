@@ -27,7 +27,13 @@ Analysis of antibody repertoires by high throughput sequencing is of major impor
 
 ## Installation ##
 
-For now, only the development version is available for installation.
+RAbHIT is available for installion either from CRAN or from the development version.
+
+### RAbHIT CRAN installation ###
+
+```R
+install.packages("rabhit")
+```
 
 ### RAbHIT repository installation ###
 

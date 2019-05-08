@@ -365,18 +365,17 @@ hapHeatmap <- function(hap_table, chain = c("IGH", "IGK", "IGL"), gene_sort = "p
     }
 
 
-    haplo_db_texture <- c()
+    haplo_db_texture <- setNames(data.frame(matrix(ncol = 9, nrow = 0)), c('SUBJECT','GENE','ALLELES','hapBy','K','points','yend','x','xend'))
     loc <- 1:length(levels(droplevels(haplo_db$GENE)))
     names(loc) <- rev(levels(droplevels(haplo_db$GENE)))
     for (i in 1:nrow(haplo_db)) {
         if (haplo_db$K[i] < lk_cutoff && !haplo_db$ALLELES[i] %in% c("Unk", "Del", "NR")) {
             tmp_point <- haplo_db[i, ] %>% slice(rep(1, each = ifelse(length(samples) < 4, 15, 8))) %>% mutate(points = seq(0, 0.9, length.out = ifelse(length(samples) <
                 4, 15, 8)), yend = seq(0, 0.9, length.out = ifelse(length(samples) < 4, 15, 8)) + 0.1, x = loc[as.character(.data$GENE)] - 0.49, xend = loc[as.character(.data$GENE)] + 0.49)
-            haplo_db_texture <- rbind(haplo_db_texture, tmp_point)
+            haplo_db_texture <- bind_rows(haplo_db_texture, tmp_point)
         }
     }
-    haplo_db_texture <- haplo_db_texture[!duplicated(haplo_db_texture[, c("GENE", "ALLELES", "hapBy", "K", "points", "SUBJECT")]), ]
-    haplo_db_texture$col <- "<1"
+
 
     heatmap.df <- as.data.frame(haplo_db %>% group_by(.data$SUBJECT, .data$hapBy, .data$GENE) %>% mutate(n = n()))
     heatmap.df$freq <- ifelse(heatmap.df$n == 2, 0.5, ifelse(heatmap.df$n != 1, 0.25, 1))
@@ -387,7 +386,6 @@ hapHeatmap <- function(hap_table, chain = c("IGH", "IGK", "IGL"), gene_sort = "p
     if (length(grep("[0-9][0-9]_[0-9][0-9]", heatmap.df$ALLELES)) != 0) {
         non_reliable_alleles_text <- nonReliableAllelesText(heatmap.df[grep("[0-9][0-9]_[0-9][0-9]", heatmap.df$ALLELES), ])
         heatmap.df$ALLELES[grep("[0-9][0-9]_[0-9][0-9]", heatmap.df$ALLELES)] <- "NRA"
-        haplo_db_texture$ALLELES[grep("[0-9][0-9]_[0-9][0-9]", haplo_db_texture$ALLELES)] <- "NRA"
         allele_palette <- alleleHapPalette(heatmap.df$ALLELES)
         non_reliable_alleles_text$ALLELES <- factor(non_reliable_alleles_text$ALLELES, levels = allele_palette$AlleleCol)
     } else {
@@ -395,10 +393,10 @@ hapHeatmap <- function(hap_table, chain = c("IGH", "IGK", "IGL"), gene_sort = "p
         allele_palette <- alleleHapPalette(heatmap.df$ALLELES, NRA = F)
 
     }
-
+    sub_lev <- F
     if (length(levels(hap_table$SUBJECT)) != 0) {
+        sub_lev <- T
         heatmap.df$SUBJECT <- factor(heatmap.df$SUBJECT, levels = levels(hap_table$SUBJECT))
-        haplo_db_texture$SUBJECT <- factor(haplo_db_texture$SUBJECT, levels = levels(hap_table$SUBJECT))
         non_reliable_alleles_text$SUBJECT <- factor(non_reliable_alleles_text$SUBJECT, levels = levels(hap_table$SUBJECT))
     }
 
@@ -408,7 +406,7 @@ hapHeatmap <- function(hap_table, chain = c("IGH", "IGK", "IGL"), gene_sort = "p
         scale_fill_manual(values = alpha(names(allele_palette$AlleleCol), allele_palette$transper), name = "Alleles", drop = FALSE) + facet_grid(SUBJECT ~
         title, as.table = FALSE, switch = "y") + scale_y_continuous(expand = c(0, 0)) + scale_x_discrete(expand = c(0, 0)) + theme(axis.text.x = element_text(angle = 90,
         vjust = 0.5, hjust = 1, size = 10, colour = "black"), strip.text.x = element_text(size = 14), strip.text.y = element_text(angle = 180, size = 10),
-        strip.placement = "outside", axis.ticks.y = element_line(colour = col), axis.text.y = element_blank(), strip.background.y = element_blank(), legend.position = "bottom",
+        strip.placement = "outside", strip.background =element_rect(fill="seashell2"), axis.ticks.y = element_line(colour = col), axis.text.y = element_blank(), strip.background.y = element_blank(), legend.position = "bottom",
         legend.justification = "center", panel.spacing.y = unit(0.9, "pt")) + labs(y = "", x = "") + guides(fill = guide_legend(nrow = round(length(allele_palette$AlleleCol)/10),
         order = 1, override.aes = list(color = "#DCDCDC")))
 
@@ -417,14 +415,18 @@ hapHeatmap <- function(hap_table, chain = c("IGH", "IGK", "IGL"), gene_sort = "p
         width = 0.95, na.rm = T) + scale_fill_manual(values = alpha(names(allele_palette$AlleleCol), allele_palette$transper), name = "Alleles", drop = FALSE) +
         facet_grid(SUBJECT ~ title, as.table = FALSE, switch = "y") + scale_y_continuous(expand = c(0, 0)) + scale_x_discrete(expand = c(0, 0)) + theme(axis.text.x = element_text(angle = 90,
         vjust = 0.5, hjust = 1, size = 10, colour = "black"), strip.text.x = element_text(size = 14), strip.text.y = element_text(angle = 180, size = 10),
-        strip.placement = "outside", axis.ticks.y = element_line(colour = col), axis.text.y = element_blank(), strip.background.y = element_blank(), legend.position = "bottom",
+        strip.placement = "outside", strip.background =element_rect(fill="seashell2"), axis.ticks.y = element_line(colour = col), axis.text.y = element_blank(), strip.background.y = element_blank(), legend.position = "bottom",
         legend.justification = "center", panel.spacing.y = unit(0.9, "pt")) + labs(y = "") + guides(fill = guide_legend(nrow = round(length(allele_palette$AlleleCol)/10),
         order = 1, override.aes = list(color = "#DCDCDC")))
 
 
     if (mark_low_lk & nrow(haplo_db_texture) != 0) {
 
+        haplo_db_texture <- haplo_db_texture[!duplicated(haplo_db_texture[, c("GENE", "ALLELES", "hapBy", "K", "points", "SUBJECT")]), ]
+        haplo_db_texture$col <- "<1"
+        if(sub_lev) haplo_db_texture$SUBJECT <- factor(haplo_db_texture$SUBJECT, levels = levels(hap_table$SUBJECT))
         haplo_db_texture$ALLELES <- factor(haplo_db_texture$ALLELES, levels = allele_palette$AlleleCol)
+        haplo_db_texture$ALLELES[grep("[0-9][0-9]_[0-9][0-9]", haplo_db_texture$ALLELES)] <- "NRA"
 
         if (gsub(chain,"",hapBy_alleles[1]) %in% haplo_db_texture$hapBy) {
             # Get Allele legend
@@ -467,7 +469,8 @@ hapHeatmap <- function(hap_table, chain = c("IGH", "IGK", "IGL"), gene_sort = "p
                            angle = 90, size = non_reliable_alleles_text$size[non_reliable_alleles_text$hapBy == hapBy_cols[2]])
     }
 
-    plot(plot_grid(plot_grid(p + theme(legend.position = "none"), p1 + theme(legend.position = "none"), nrow = 2, align = "hv"), legend, rel_heights = c(0.9,
+    plot(plot_grid(plot_grid(p + theme(legend.position = "none", plot.background = element_rect(fill = "transparent", colour = NA), panel.background = element_rect(fill = "transparent", colour = NA), axis.line = element_line(color="black")),
+                             p1 + theme(legend.position = "none", plot.background = element_rect(fill = "transparent", colour = NA), panel.background = element_rect(fill = "transparent", colour = NA),axis.line = element_line(color="black")), nrow = 2, align = "hv"), legend, rel_heights = c(0.9,
         0.1), ncol = 1))
 }
 
@@ -511,7 +514,8 @@ hapDendo <- function(hap_table, chain = c("IGH", "IGK", "IGL"), gene_sort = c("n
   gene_sort <- match.arg(gene_sort)
   hapBy_cols = names(hap_table)[c(3,4)]
   samples <- unique(hap_table$SUBJECT)
-
+  if (length(samples) < 2)
+    stop("hapDendo function requires at least two samples")
   # creating the distance matrix for clustering
   mat <- matrix(NA, nrow = length(samples), ncol = length(samples))
   for (i in 2:length(samples)) {
@@ -543,7 +547,7 @@ hapDendo <- function(hap_table, chain = c("IGH", "IGK", "IGL"), gene_sort = c("n
   plt_dendr <- ggplot(segment_data) + geom_segment(aes_string(x = "x", y = "y", xend = "xend", yend = "yend")) + scale_x_continuous(expand = c(0, 0.01)) + scale_y_continuous(breaks = samples_pos_table$y_center,
                                                                                                                                                                               labels = samples_pos_table$gene, limits = samples_axis_limits, expand = c(0, 0)) + labs(x = "Jaccard distance", y = "", colour = "", size = "") +
     theme_bw() + theme(panel.grid.minor = element_blank(), axis.ticks.y = element_blank(), panel.grid = element_blank(), panel.border = element_blank(),
-                       axis.text = element_text(size = 10, colour = "black"), axis.title.x = element_text(size = 14, colour = "black")) + ylab('')
+                       axis.text = element_text(size = 14, colour = "black"), axis.title.x = element_text(size = 14, colour = "black")) + ylab('')
 
   # Creating the haploype db for ploting
   haplo_db_clust <- c()
@@ -564,18 +568,17 @@ hapDendo <- function(hap_table, chain = c("IGH", "IGK", "IGL"), gene_sort = c("n
   haplo_db_clust$grouper_x <- "Gene"
   haplo_db_clust$grouper_y <- sapply(1:nrow(haplo_db_clust), function(i) paste0(haplo_db_clust$SUBJECT[i], " ", haplo_db_clust$hapBy[i]))
 
-  haplo_db_clust_texture <- c()
+  haplo_db_clust_texture <- setNames(data.frame(matrix(ncol = 13, nrow = 0)), c('SUBJECT','GENE','ALLELES','hapBy','K','n','freq','grouper_x','grouper_y','points','yend','x','xend'))
   loc <- 1:length(levels(droplevels(haplo_db_clust$GENE)))
   names(loc) <- levels(droplevels(haplo_db_clust$GENE))
   for (i in 1:nrow(haplo_db_clust)) {
     if (haplo_db_clust$K[i] < lk_cutoff && !haplo_db_clust$ALLELES[i] %in% c("Unk", "Del", "NR")) {
       tmp_point <- haplo_db_clust[i, ] %>% slice(rep(1, each = ifelse(length(samples) < 4, 15, 8))) %>% mutate(points = seq(0, 0.9, length.out = ifelse(length(samples) <
                                                                                                                                                           4, 15, 8)), yend = seq(0, 0.9, length.out = ifelse(length(samples) < 4, 15, 8)) + 0.1, x = loc[as.character(.data$GENE)] - 0.49, xend = loc[as.character(.data$GENE)] + 0.49)
-      haplo_db_clust_texture <- rbind(haplo_db_clust_texture, tmp_point)
+      haplo_db_clust_texture <- bind_rows(haplo_db_clust_texture, tmp_point)
     }
   }
-  haplo_db_clust_texture <- haplo_db_clust_texture[!duplicated(haplo_db_clust_texture[, c("GENE", "ALLELES", "K", "points", "SUBJECT")]), ]
-  haplo_db_clust_texture$col <- "<1"
+
 
   allele_cols <- gsub("IG[H|K|L]", "", gsub("_", "*", hapBy_cols))
   # Adding white space to plot
@@ -605,7 +608,6 @@ hapDendo <- function(hap_table, chain = c("IGH", "IGK", "IGL"), gene_sort = c("n
   }
 
   heatmap.df$grouper_y <- factor(heatmap.df$grouper_y, levels = samples_order)
-  haplo_db_clust_texture$grouper_y <- factor(haplo_db_clust_texture$grouper_y, levels = samples_order)
   if (length(grep("[0-9][0-9]_[0-9][0-9]", heatmap.df$ALLELES)) != 0) {
     non_reliable_alleles_text <- nonReliableAllelesText(heatmap.df[!grepl("NA", heatmap.df$grouper_y) & grepl("[0-9][0-9]_[0-9][0-9]", heatmap.df$ALLELES),
                                                                    ],size = 3)
@@ -625,14 +627,17 @@ hapDendo <- function(hap_table, chain = c("IGH", "IGK", "IGL"), gene_sort = c("n
   hap_plot <- ggplot() + geom_col(data = heatmap.df, mapping = aes_string(x = "GENE_LOC", y = "freq", fill = "ALLELES"), position = "fill", width = 0.95,
                                   na.rm = T) + scale_fill_manual(values = alpha(names(allele_palette$AlleleCol), allele_palette$transper), name = "Alleles", drop = FALSE) + facet_grid(grouper_y ~
                                                                                                                                                                                           grouper_x, as.table = FALSE, switch = "y", labeller = labeller(grouper_y = samples_label), drop = FALSE) + scale_y_continuous(expand = c(0, 0)) +# scale_x_discrete(expand = c(0,0))
-    theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust = 1, size = 10, colour = "black"), strip.text.x = element_blank(), strip.text.y = element_text(angle = 180,
-                                                                                                                                                                   size = 10), panel.grid = element_blank(), strip.placement = "outside", axis.ticks.y = element_line(colour = "white"), axis.line.y.left = element_blank(),
+    theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust = 1, size = 14, colour = "black"), strip.text.x = element_blank(), strip.text.y = element_text(angle = 180,
+                                                                                                                                                                   size = 14), panel.grid = element_blank(), strip.placement = "outside", axis.ticks.y = element_line(colour = "white"), axis.line.y.left = element_blank(),
           axis.text.y = element_blank(), strip.background.y = element_blank(), strip.background.x = element_blank(), panel.spacing.y = unit(0.9, "pt"), legend.position = "bottom",
-          axis.title.x = element_text(size = 14, colour = "black"), legend.justification = "center") + labs(y = "", x = "Gene") + guides(fill = guide_legend(nrow = round(length(allele_palette$AlleleCol)/9),
+          axis.title.x = element_text(size = 15, colour = "black"), legend.justification = "center") + labs(y = "", x = "Gene") + guides(fill = guide_legend(nrow = round(length(allele_palette$AlleleCol)/9),
                                                                                                                                                              order = 1, override.aes = list(color = "#DCDCDC"))) + scale_x_continuous(expand = c(0,0),breaks = 1:length(unique(heatmap.df$GENE)[order(match(unique(heatmap.df$GENE), levels(heatmap.df$GENE)))]),labels = unique(heatmap.df$GENE)[order(match(unique(heatmap.df$GENE), levels(heatmap.df$GENE)))], sec.axis = dup_axis(name = ""))
 
 
   if (mark_low_lk & nrow(haplo_db_clust_texture) != 0) {
+    haplo_db_clust_texture$grouper_y <- factor(haplo_db_clust_texture$grouper_y, levels = samples_order)
+    haplo_db_clust_texture <- haplo_db_clust_texture[!duplicated(haplo_db_clust_texture[, c("GENE", "ALLELES", "K", "points", "SUBJECT")]), ]
+    haplo_db_clust_texture$col <- "<1"
     # Get Allele legend
     gt1 = ggplotGrob(hap_plot)
 
@@ -661,7 +666,9 @@ hapDendo <- function(hap_table, chain = c("IGH", "IGK", "IGL"), gene_sort = c("n
     hap_plot <- hap_plot + geom_text(data = non_reliable_alleles_text, aes_string(label = "text", x = "GENE_LOC", y = "pos"), angle = 90, size = non_reliable_alleles_text$size)
   }
 
-  dend_hap <- plot_grid(hap_plot + theme(legend.position = "none"), plt_dendr, nrow = 1, align = "h", axis = "bt", rel_widths = c(1, 0.25))
+  dend_hap <- plot_grid(hap_plot + theme(legend.position = "none", plot.background = element_rect(fill = "transparent", colour = NA),
+                                         panel.background = element_rect(fill = "transparent", colour = NA), axis.line.x = element_line(color="black")),
+                        plt_dendr, nrow = 1, align = "h", axis = "bt", rel_widths = c(1, 0.25))
   plot(plot_grid(dend_hap, legend, ncol = 1, rel_heights = c(1, 0.1)))
 }
 
@@ -723,7 +730,7 @@ plotDeletionsByBinom <- function(GENE.usage.df, chain = c("IGH", "IGK", "IGL"), 
     if (length(levels(GENE.usage.df$DELETION)) < 4)
         lab = c("Deletion", "No Deletion", "NA") else lab = c("Deletion", "No Deletion", "NA", "Non reliable")
     if (length(levels(GENE.usage.df$DELETION)) < 4)
-        col_val = c("#0000ff", "#ffffff", "#808080") else col_val = c("#0000ff", "#ffffff", "#808080", "#ffefd5")
+        col_val = c("#6d6d6d", "#ffffff", "#dedede") else col_val = c("#6d6d6d", "#ffffff", "#dedede", "#ffefd5")
     heatmap.plot <- ggplot(data = GENE.usage.df, aes_string(x = "GENE2", y = "SUBJECT")) + geom_tile(aes_string(fill = "DELETION")) + scale_fill_manual(name = "", labels = lab,
         values = col_val, drop = F) + scale_x_discrete(drop = FALSE) + ylab("Subject") + xlab("Gene") + theme(axis.text = element_text(size = 12, colour = "black"), axis.title.y = element_text(size = 18),
         axis.text.x = element_text(angle = 90, vjust = 0.5, hjust = 1, size = 14, colour = "black"), legend.key = element_rect(colour = "black", size = 0.5, linetype = "solid"),
@@ -833,7 +840,7 @@ deletionHeatmap <- function(hap_table, kThreshDel = 3, chain = c("IGH", "IGK", "
   heatmap.df$HapBy <- ifelse(heatmap.df$HapBy == ALLELE_01_num, ALLELE_01_col, ALLELE_02_col)
   heatmap.plot <- ggplot(data = heatmap.df, aes_string(x = "GENE2", y = "SUBJECT")) + theme_bw() + geom_tile(aes_string(fill = "DEL")) + facet_wrap(~HapBy, nrow = 2) + scale_x_discrete(drop = FALSE) +
     scale_fill_manual(name = "lK", labels = c("No deletion (lK>=3)", "No deletion (lK<3)", paste0("Deletion (lK<", kThreshDel, ")"), paste0("Deletion (lK>=",
-                                                                                                                                            kThreshDel, ")"), "NA"), values = c("white", "lightgrey", "lightblue", "blue", "gray40"), drop = FALSE) + ylab("Subject") + xlab("Gene") + theme(strip.text = element_text(size = 18),
+                                                                                                                                            kThreshDel, ")"), "NA"), values = c("white", "#ffb6c1", "lightblue", "#6d6d6d", "#dedede"), drop = FALSE) + ylab("Subject") + xlab("Gene") + theme(strip.text = element_text(size = 18), strip.background =element_rect(fill="seashell2"),
                                                                                                                                                                                                                                                                                              axis.title = element_text(size = 18), axis.text = element_text(size = 14, colour = "black"), axis.text.x = element_text(angle = 90, vjust = 0.5,
                                                                                                                                                                                                                                                                                                                                                                                                                      hjust = 1), plot.margin = margin(b = 12), panel.grid.major = element_blank(), panel.grid.minor = element_blank(), panel.background = element_blank(),
                                                                                                                                                                                                                                                                                              legend.direction = "horizontal", legend.justification = "center", legend.position = "bottom", legend.text = element_text(size = 14), legend.title = element_text(size = 14),
@@ -933,7 +940,7 @@ plotDeletionsByVpooled <- function(del.df, K_ranges = c(3, 7)) {
         del.df$GENE2 <- factor(gsub("IGH", "", del.df$GENE), levels = gsub("IGH", "", GENE.loc[["IGH"]]))
         labels1 = c(paste0("Deletion lK<", K_ranges[1]), paste0("Deletion ", K_ranges[1], "<=lK<", K_ranges[2]), paste0("Deletion lK>=", K_ranges[2]), paste0("No deletion lK<",
             K_ranges[1]), paste0("No deletion ", K_ranges[1], "<=lK<", K_ranges[2]), paste0("No deletion lK>=", K_ranges[2]))
-        values1 = c("lightblue", "cornflowerblue", "black", "lightpink", "lightcoral", "lightgrey")
+        values1 = c("lightblue", "cornflowerblue", "#6d6d6d", "lightpink", "lightcoral", "white")
     }
 
     if (length(K_ranges) == 1) {
@@ -953,13 +960,14 @@ plotDeletionsByVpooled <- function(del.df, K_ranges = c(3, 7)) {
         del.df$GENE2 <- factor(gsub("IGH", "", del.df$GENE), levels = gsub("IGH", "", GENE.loc[["IGH"]]))
         labels1 = c(paste0("Deletion lK<", K_ranges[1]), paste0("Deletion lK>=", K_ranges[1]), paste0("No deletion lK<", K_ranges[1]), paste0("No deletion lK>=",
             K_ranges[1]))
-        values1 = c("lightblue", "black", "lightpink", "lightgrey")
+        values1 = c("lightblue", "#6d6d6d", "lightpink", "lightgrey")
     }
 
     heatmap.plot <- ggplot(data = del.df, aes_string(x = "GENE2", y = "SUBJECT")) + geom_tile(aes_string(fill = "EVENT")) + scale_fill_manual(name = "", labels = labels1, values = values1,
         drop = F) + ylab("Subject") + xlab("Gene") + theme(strip.text = element_text(size = 14), axis.title = element_text(size = 14), axis.text = element_text(size = 12, colour = "black"),
         legend.position = "bottom", legend.justification = "center", axis.text.x = element_text(angle = 90, vjust = 0.5, hjust = 1), legend.key = element_rect(colour = "black",
-            size = 0.5, linetype = "solid"), legend.text = element_text(size = 14))
+            size = 0.5, linetype = "solid"), legend.text = element_text(size = 14), axis.line.x.bottom = element_line(colour = "black", inherit.blank = F),
+        axis.line.y.left = element_line(colour = "black", inherit.blank = F), axis.line = element_blank(), panel.grid = element_blank(), panel.background = element_blank())
 
 
 

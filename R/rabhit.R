@@ -15,7 +15,7 @@
 #' \itemize{
 #'   \item  \link{createFullHaplotype}:      Haplotypes inference and single chromosome deletions based on an anchor gene.
 #'   \item  \link{deletionsByVpooled}:       Single chromosomal deletion detection by pooling V genes.
-#'   \item  \link{deletionsByBinom}:         Single chromosomal deletion detection by pooling V genes.
+#'   \item  \link{deletionsByBinom}:         Double chromosomal deletion detection by relative gene usage.
 #'   \item  \link{nonReliableVGenes}:        Non reliable gene assignment detection.
 #' }
 #'
@@ -56,7 +56,7 @@
 #'                           mutate mutate_ summarize summarize_
 #'                           mutate_at summarize_at count_ count
 #'                           rename rename_ transmute transmute_ pull ungroup row_number
-#' @importFrom  data.table   := rbindlist
+#' @importFrom  data.table   := rbindlist data.table .N
 #' @importFrom  reshape2     melt
 #' @importFrom  gtools       ddirichlet
 #' @importFrom  stats        hclust as.dendrogram as.dist binom.test p.adjust setNames weighted.mean
@@ -69,5 +69,6 @@
 #' @importFrom  tigger       sortAlleles
 #' @importFrom  RColorBrewer brewer.pal
 #' @importFrom  tidyr        separate_rows
+#' @importFrom  stringi      stri_detect_regex stri_detect_fixed
 NULL
 

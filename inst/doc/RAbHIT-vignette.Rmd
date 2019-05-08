@@ -36,7 +36,7 @@ vignette: >
   %\VignetteEngine{knitr::rmarkdown} 
 ---
   
-## Introduction 
+# Introduction 
   
 Analysis of antibody repertoires by high throughput sequencing is of major importance in understanding adaptive immune responses. 
 Our knowledge of variations in the genomic loci encoding antibody genes is incomplete, mostly due to technical difficulties in aligning short reads to these highly repetitive loci. 
@@ -49,20 +49,7 @@ More details can be found here:
   
 [Gidoni, Moriah, et al. "Mosaic deletion patterns of the human antibody heavy chain gene locus shown by Bayesian haplotyping." Nature Communications 10.1 (2019): 628.](https://doi.org/10.1038/s41467-019-08489-3)
 
-## Installation
-
-
-For now, only the development version of RAbHIT is available for installation.
-To install RAbHIT from the source code please use the code below:
-
-```R
-library(devtools)
-install_bitbucket("yaarilab/rabhit")
-```
-
-For further installions instruction please refer to [https://bitbucket.org/yaarilab/rabhit](https://bitbucket.org/yaarilab/rabhit)
-
-## Input
+# Input
 
 RAbHIT requires two main inputs:
   
@@ -83,45 +70,48 @@ Column Name           | Description
 An example dataset is provided with RAbHIT. It contains unique naive b-cell sequences, from multiple individuals. One individual in the example data set appears twice, once with full V coverage and once partial V coverage (I5 and I5_FR2 respectively).
 
 The database of germline sequences should be provided in a FASTA format with 
-sequences gapped according to the IMGT numbering scheme[@lefranc2003imgt]. IGHV, IGHD, and IGHJ alleles in
-the IMGT database (release 2018-12-4) are provided with this package (HVGERM, HDGERM, and HJGERM). We removed the following IGHV alleles, as they are duplicated from other allele assignments (All duplicates are mentioned in IMGT). 
+sequences gaped according to the IMGT numbering scheme[@lefranc2003imgt]. IGHV, IGHD, and IGHJ alleles in
+the IMGT database (release 2018-12-4) are provided with this package (HVGERM, HDGERM, and HJGERM). We removed the following IGHV and IGHD alleles, as they are duplicated from other allele assignments (All duplicates are mentioned in IMGT). 
 
-V allele    | V allele duplicated (removed)
-------------|------------------------------
-IGHV1-69*01 | IGHV1-69D*01
-IGHV2-70*04 | IGHV2-70D*04
-IGHV3-23*01 | IGHV3-23D*01
-IGHV3-30*04 | IGHV3-30-3*03
-IGHV3-29*01 | IGHV3-30-42*01
-IGHV3-30*18 | IGHV3-30-5*01
-IGHV3-30*02 | IGHV3-30-5*02
+V/D allele    | V/D allele duplicated (removed)
+--------------|------------------------------
+IGHV1-69*01   | IGHV1-69D*01
+IGHV2-70*04   | IGHV2-70D*04
+IGHV3-23*01   | IGHV3-23D*01
+IGHV3-30*04   | IGHV3-30-3*03
+IGHV3-29*01   | IGHV3-30-42*01
+IGHV3-30*18   | IGHV3-30-5*01
+IGHV3-30*02   | IGHV3-30-5*02
+IGHD4-11*01   | IGHD4-4*01
+IGHD5-18*01   | IGHD5-5*01
 
 
-```{r, eval=TRUE, message=FALSE, warning=FALSE}
-library(rabhit)
-# Load example sequence data and example germline database
-data(samples_db, HVGERM, HDGERM)
-```
-### Pre-processing of the data
+# Pre-processing of the data
 
 To obtain the most reliable result we suggest following the data pre-processing steps below.
 
 1. Align each sequence to infer the germline VDJ alleles.
 2. Remove duplicated sequences (pRESTO[@presto]).
 3. Infer novel alleles (TIgGER[@gadala2018identification]).
-4. Re-align the sequences with the extended V refrence including the new alleles.
-5. Infer the idividual genotype according to the following:
+4. Re-align the sequences with the extended V reference including the new alleles.
+5. Infer the individual genotype according to the following:
     * Cell type:
-        * If the dataset is from PBMCs then, to avoid memory cell influence on the results, it is important to infer clones prior to genotyping. After infering clones, choose a representitive sequence with the fewest mutations for each clone.
+        * If the dataset is from PBMCs then, to avoid memory cell influence on the results, it is important to infer clones prior to genotyping. After inferring clones, choose a representative sequence with the fewest mutations for each clone.
         * If the dataset is from naive B-cells then no additional reduction is needed.
     * V coverage:
-        * If the dataset seqeunces are with partial V coverage, first determine reliable gene and alleles, then change the non-reliable alleles' annotation and genotype.
+        * If the dataset sequences are with partial V coverage, first determine reliable gene and alleles, then change the non-reliable alleles' annotation and genotype.
         * If the dataset is from naive B-cells then no additional reduction is needed.
 6. Re-align the sequences with the individual personal genotype as a reference.        
-7. It is recommended to filter the sequences to only V genes with <=3 mutations and no mutations in D gene.
+7. It is recommended to filter the sequences to only V genes with $\leq{3}$  mutations and no mutations in D gene.
 8. For best haplotype inference results, ideally the dataset final unique VDJ count should be more than 2000 sequences.
 
-## Running RAbHIT
+# Running RAbHIT
+
+To load rabhit will run the following:
+
+```{r, eval=TRUE, message=FALSE, warning=FALSE}
+library(rabhit)
+```
 
 The functions provided by this package can be used to perform any combination of
 the following:
@@ -133,7 +123,7 @@ the following:
 5. Graphical output of the inferred deletions
 
 
-### Infer haplotype by anchor gene
+## Infer haplotype by anchor gene
 
 #### Haplotype with J6 as anchor
 
@@ -141,6 +131,8 @@ An individual's haplotype can be inferred using the function `createFullHaplotyp
 The function infers the haplotype based on the provided anchor gene. Using this function, a contingency table is created for each gene, *from which a strand is inferred for each allele*. The user can set the anchor gene for haplotyping as well as the column for which a haplotype should be inferred.
 
 ```{r, eval=TRUE, warning=FALSE}
+# Load example sequence data and example germline database
+data(samples_db, HVGERM, HDGERM)
 # Selecting a single individual
 clip_db <- samples_db[samples_db$SUBJECT=='I5', ]
 # Inferring haplotype using J6 as anchor
@@ -158,9 +150,10 @@ head(haplo_db_J6,3)
 plotHaplotype(haplo_db_J6)
 ```
 
+
 #### Haplotype with D2-21 as anchor
 
-One of the advantages of RAbHIT, is the ability to infer haplotype by other anchor genes than J6. RAbHIT offeres utilizing any gene as anchor, however, we recommend that the fraction of the least frequent allele of the anchor gene will be above $0.3$. So far only J6, D2-8, and D2-21 has been proven to infer the heavy chain loci correctly. Here, we chose a single individual from our example dataset with heterozygousity in J6 and D2-21, inferred haplotypes according to both anchors, compared them using the `hapDendo` function, and calculated the Jaccard distance between the inferred haplotypes.   
+One of the advantages of RAbHIT, is the ability to infer haplotype by other anchor genes than J6. RAbHIT offers utilizing any gene as anchor, however, we recommend that the fraction of the least frequent allele of the anchor gene will be above $0.3$. So far only J6, D2-8, and D2-21 has been proven to infer the heavy chain loci correctly. Here, we chose a single individual from our example dataset with heterozygousity in J6 and D2-21, inferred haplotypes according to both anchors, compared them using the `hapDendo` function, and calculated the Jaccard distance between the inferred haplotypes.   
 
 ```{r, eval=TRUE, warning=FALSE, fig.width=12, fig.height=8}
 # Inferring haplotype using D2-21 as anchor
@@ -168,7 +161,7 @@ haplo_db_D2_21 <- createFullHaplotype(clip_db, toHap_col="V_CALL",
                         hapBy_col="D_CALL", hapBy="IGHD2-21", toHap_GERM=HVGERM)
 ```
 
-To bind the two data frames we need to associate each of the D2-21 alleles with J6 alleles. We can do that from the haplotype inference with the J6 as anchor
+To combine the two data frames we need to associate each of the D2-21 alleles with J6 alleles. We can do that from the haplotype inference with the J6 as anchor
 
 ```{r, eval=TRUE, warning=FALSE}
 haplo_db_J6[haplo_db_J6$GENE == "IGHD2-21", ]
@@ -193,7 +186,7 @@ names(haplo_db_D2_21)[which(names(haplo_db_D2_21)=='IGHD2-21_02')] <- "AnchorJ02
 # Subseting the haplo_db_J6 dataset to include only the V genes
 haplo_db_J6 <- haplo_db_J6[grep('IGHV',haplo_db_J6$GENE),]
 
-# Binding the datasets
+# Combining the datasets rowwise
 haplo_comb <- rbind(haplo_db_J6,haplo_db_D2_21)
 ``` 
 
@@ -218,7 +211,7 @@ haplo_db <- createFullHaplotype(clip_dbs, toHap_col=c("V_CALL","D_CALL"),
 hapHeatmap(haplo_db)
 ``` 
 
-### Inferring double chromosome deletion by relative gene usage
+## Inferring double chromosome deletion by relative gene usage
 
 Gene usage tends to vary between individuals, and in some cases the relative gene usage of certain individuals are much lower than the rest of the population. To asses whether the low frequency arises from a deleted gene, a binomial test described in  Gidoni *et al.* (2018)[@gidoni2018mosaic] was implemented. There it was checked whether the relative gene usage of a specific gene or set of genes in an individual is lower than a chosen cutoff. For example for the IGHV genes, the chosen cutoff was $0.001$. The `deletionsByBinom` function implements the binomial test and returns the detected gene deletion for a certain individual.
 
@@ -242,7 +235,7 @@ plotDeletionsByBinom(del_binom_db)
 The detection of a double chromosome deletion from the function can be then used for haplotype inference. This prior knowledge of deletion can raise the certainty level in the inference of the genes for where a deletion was detected. The `createFullHaplotype` receives a vector of the deleted genes detected. V gene labels marked in red represent low expressed genes for which deletions are inferred with lowly certainty. D gene labels marked in purple represent indistinguishable genes due to high sequence similarity, therefore the alignment call is less reliable.
 
 
-### Interactive Haplotype infrence with double chromosome deletions
+## Interactive Haplotype inference with double chromosome deletions
 
 Individuals with partial V coverage tend to have multiple gene or allele assignments. This multiplicity requires special attention, as it can hinder the haplotype inference results by introducing biases. To infer the haplotypes correctly from those datasets we recommend following the initial pre-processing steps and detecting non reliable V genes using the `nonReliableVGenes` function.
 
@@ -260,7 +253,8 @@ As mentioned above the double chromosome deletions can be used within the haplot
 
 ```{r, eval=TRUE, warning=FALSE, cache=TRUE}
 # Inferred deletion summary table
-del_binom_db <- deletionsByBinom(clip_db, nonReliable_Vgenes = nonReliable_Vgenes)
+del_binom_db <- deletionsByBinom(clip_db, chain = "IGH", 
+                                 nonReliable_Vgenes = nonReliable_Vgenes)
 ```
 
 Next, the haplotype can be inferred inputting the deletion summary table to the `deleted_genes` flag and the non reliable V genes list to the `nonRelaible_Vgenes` flag in the `createFullHaplotype` function.
@@ -293,7 +287,7 @@ p
 ```
 
 
-### Haplotype inference deletion heatmap
+## Haplotype inference deletion heatmap
 
 `createFullHaplotype` can infer single chromosome deletion events by the threshold of the certainty level of the inference. The function utilizes the Bayes factor ($K$) obtained from the posterior probability of the inference. A gene deletion event is defined when the log 10 of the $K$ value ($lK = log_{10}(K)$) for an "unknown" gene is larger than the threshold of $3$ (The default value of the `kThreshDel` flag).
 
@@ -317,7 +311,7 @@ deletionHeatmap(haplo_db)
 ```
 
 
-### Infering D/J single chromosome deletion by V pooled approach
+## Infering D/J single chromosome deletion by V pooled approach
 
 Since V gene heterozygosity is extremely common, using V genes as anchors for haplotype inference could increase the number of people for which D and J haplotype can be inferred. However, since there are far more V genes than J genes, the relative frequencies of them are lower. Therefore, to obtain a reliable haplotype inference using V genes as anchors, the sequence depth of the dataset has to be much greater than when using J6.
 
@@ -337,7 +331,7 @@ However, it is recommended to use this function for multiple individuals.
 plotDeletionsByVpooled(del_db)
 ```
 
-## Contact
+# Contact
 
 For help, questions, or suggestions, please contact:
 
@@ -345,3 +339,5 @@ For help, questions, or suggestions, please contact:
 * [Moriah Gidoni](mailto:moriah.cohen@biu.ac.il)
 * [Gur Yaari](mailto:gur.yaari@biu.ac.il)
 * [Issue tracker](https://bitbucket.org/yaarilab/rabhit/issues?status=new&status=open)
+
+# References

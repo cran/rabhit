@@ -253,7 +253,7 @@ parseHapTab <- function(hap_table, chain = c("IGH", "IGK", "IGL")) {
     geno.df <- data.frame(mapply(c,hap_table[, c("SUBJECT", "GENE", hapBy_cols[1])],hap_table[, c("SUBJECT", "GENE", hapBy_cols[2])]),
                hapBy = c(rep(hapBy_alleles[1], nrow(hap_table)),rep(hapBy_alleles[2], nrow(hap_table))), stringsAsFactors = F)
     names(geno.df)[3] <- "ALLELES"
-    geno.df <- tidyr::separate_rows(geno.df, "ALLELES")
+    geno.df <- tidyr::separate_rows(geno.df, "ALLELES", sep = ",")
     parsed_hap_table <- list(geno.df = geno.df, kval.df = kval.df, count.df = count.df)
 
 }

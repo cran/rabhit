@@ -69,7 +69,7 @@ NULL
 #' @export
 
 createFullHaplotype <- function(clip_db, toHap_col = c("V_CALL", "D_CALL"), hapBy_col = "J_CALL", hapBy = "IGHJ6", toHap_GERM, relative_freq_priors = TRUE,
-    kThreshDel = 3, rmPseudo = TRUE, deleted_genes = c(), nonReliable_Vgenes = c(), min_minor_fraction = 0.3, chain = c("IGH", "IGK", "IGL")) {
+                                kThreshDel = 3, rmPseudo = TRUE, deleted_genes = c(), nonReliable_Vgenes = c(), min_minor_fraction = 0.3, chain = c("IGH", "IGK", "IGL")) {
 
 
   # Check if germline was inputed
@@ -87,6 +87,7 @@ createFullHaplotype <- function(clip_db, toHap_col = c("V_CALL", "D_CALL"), hapB
   }
 
   haplo_db <- c()
+  clip_db <- clip_db %>% select(.data$SUBJECT, !!eval(c(hapBy_col,toHap_col)))
   for (sample_name in unique(clip_db$SUBJECT)) {
 
     if (is.list(nonReliable_Vgenes)){
@@ -135,14 +136,16 @@ createFullHaplotype <- function(clip_db, toHap_col = c("V_CALL", "D_CALL"), hapB
         return(relFreqDf.tmp)
       } else{
 
-        toHap_col_tmp <- toHap_col[grep(substr(G,4,4),toHap_col)]
+        toHap_col_tmp <-   toHap_col[stringi::stri_detect_fixed(pattern = substr(G,4,4),str = toHap_col)]
 
-        clip_db_sub.G <- clip_db_sub %>% filter(grepl(paste0(G,'[*]'),!!as.name(toHap_col_tmp)))
-        if(substr(G,4,4)=='V'){clip_db_sub.G <- clip_db_sub.G %>% filter(getGeneCount(!!as.name(toHap_col_tmp))==1) %>%
-          group_by(!!as.name(toHap_col_tmp))  %>%
-          mutate(n=n()) %>% ungroup() %>%
-          filter((grepl(',',!!as.name(toHap_col_tmp), fixed = T)&n/nrow(clip_db_sub.G) > 0.4)|(!grepl(',',!!as.name(toHap_col_tmp), fixed = T))) %>%
-          mutate(!!as.name(toHap_col_tmp) := alleleCollapse(!!as.name(toHap_col_tmp))) %>% as.data.frame()
+        clip_db_sub.G <- clip_db_sub %>% filter(grepl(paste0("^(",G,"\\*[[:digit:]]*[\\_[[:alnum:]]*]*,?)+$"),!!as.name(toHap_col_tmp),perl = T))
+        if(substr(G,4,4)=='V'){
+          tmp <- clip_db_sub.G %>% filter(stringi::stri_detect_regex(pattern = ",",str = !!as.name(toHap_col_tmp), negate = T))
+          tmp2 <- data.table(clip_db_sub.G %>% filter(stringi::stri_detect_regex(pattern = ",",str = !!as.name(toHap_col_tmp))), key=toHap_col_tmp)
+          tmp2 <- tmp2[, n:=.N, by=eval(toHap_col_tmp)][,"prop" := n/nrow(clip_db_sub.G)][get("prop") > 0.4,]
+          if(length(tmp2[[eval(toHap_col_tmp)]])>0) tmp2[[toHap_col_tmp]] <- alleleCollapse(tmp2[[eval(toHap_col_tmp)]])
+          clip_db_sub.G <- rbind(tmp,as.data.frame(tmp2[, c("n", "prop"):=NULL]))
+
         } else clip_db_sub.G <-  clip_db_sub.G %>% filter(!grepl(',', !!as.name(toHap_col_tmp)))
 
         tmp <- clip_db_sub.G %>% filter(grepl(paste0('^(?=.*',hapBy,'\\*)'), !!as.name(hapBy_col), perl = T)) %>% select(!!as.name(toHap_col_tmp), !!as.name(hapBy_col)) %>% table()
@@ -192,11 +195,11 @@ createFullHaplotype <- function(clip_db, toHap_col = c("V_CALL", "D_CALL"), hapB
         }
       }
     }
-    )) %>% as.data.frame()
+    ),use.names=FALSE) %>% as.data.frame()
 
     colnames(GENES.df.num) <- c("SUBJECT", "GENE", gsub(pattern = "*", "_", hapBy_alleles, fixed = T),
-                                   'ALLELES', 'PRIORS_ROW', 'PRIORS_COL','COUNTS1', 'K1',
-                                   'COUNTS2', 'K2','COUNTS3', 'K3','COUNTS4', 'K4')
+                                'ALLELES', 'PRIORS_ROW', 'PRIORS_COL','COUNTS1', 'K1',
+                                'COUNTS2', 'K2','COUNTS3', 'K3','COUNTS4', 'K4')
     # Check if toHap_col genes are in toHap_GERM
     if (length(GENES.df.num) == 0)
       stop("Genes in haplotype column to be infered do not match the genes germline given")
@@ -289,8 +292,7 @@ deletionsByBinom <- function(clip_db, chain = c("IGH", "IGK", "IGL"), nonReliabl
         clip_db$SUBJECT <- "S1"
     }
 
-    GENE.loc.NoPseudo <- GENE.loc[[chain]][!grepl("OR", GENE.loc[[chain]])]
-    GENE.loc.NoPseudo <- GENE.loc.NoPseudo[!grepl("NL", GENE.loc.NoPseudo)]
+    GENE.loc.NoPseudo <- GENE.loc[[chain]][!grepl("[OR|NL]", GENE.loc[[chain]])]
     GENE.loc.NoPseudo <- GENE.loc.NoPseudo[!(GENE.loc.NoPseudo %in% PSEUDO[[chain]]) & ( GENE.loc.NoPseudo %in% Binom.test.gene.cutoff[[chain]]$GENE)]
 
     GENE.usage <- vector("list", length = length(GENE.loc.NoPseudo))
@@ -396,16 +398,7 @@ deletionsByBinom <- function(clip_db, chain = c("IGH", "IGK", "IGL"), nonReliabl
             idx <- which(GENE.usage.df.V$GENE[GENE.usage.df.V$SUBJECT == sample_name] %in% nonReliable_Vgenes[[sample_name]])
             GENE.usage.df.V$col[GENE.usage.df.V$SUBJECT == sample_name][idx] <- "Non reliable"
         }
-    } else {
-        if (!is.null(nonReliable_Vgenes)) {
-            levels(GENE.usage.df.V$col) <- c(levels(GENE.usage.df.V$col), "Non reliable")
-            idx <- which(GENE.usage.df.V$GENE[GENE.usage.df.V$SUBJECT == sample_name] %in% nonReliable_Vgenes)
-            GENE.usage.df.V$col[GENE.usage.df.V$SUBJECT == sample_name][idx] <- "Non reliable"
-        }
     }
-
-
-
 
     GENE.loc.J <- GENE.loc[[chain]][grep("J", GENE.loc[[chain]])]
     GENE.usage.df.J <- binomTestDeletion(GENE.usage.df.J, cutoff = 0.005, p.val.cutoff = 0.01, chain = chain, GENE.loc.J)
@@ -679,26 +672,19 @@ nonReliableVGenes <- function(clip_db, thresh = 0.9, appearance = 0.01) {
         clip_db$SUBJECT <- "S1"
     }
     chain = "IGH"
-    GENE.loc.NoPseudo <- GENE.loc[[chain]][!grepl("OR", GENE.loc[[chain]])]
-    GENE.loc.NoPseudo <- GENE.loc.NoPseudo[!grepl("NL", GENE.loc.NoPseudo)]
+    GENE.loc.NoPseudo <- GENE.loc[[chain]][grepl("V((?!NL).)*$", GENE.loc[[chain]], perl = T)]
     GENE.loc.NoPseudo <- GENE.loc.NoPseudo[!(GENE.loc.NoPseudo %in% PSEUDO[[chain]])]
-    GENE.loc.NoPseudo <- GENE.loc.NoPseudo[grepl("V", GENE.loc.NoPseudo)]
 
-    non_reliable_genes <- list()
-    for (sample_name in unique(clip_db$SUBJECT)) {
-        clip_db_sub = clip_db[clip_db$SUBJECT == sample_name, ]
-        gene_call <- getGene(clip_db_sub$V_CALL, first = F, strip_d = F)
-        NR_tmp <- c()
-        for (gene in GENE.loc.NoPseudo) {
-            sa <- length(grep(paste0("^", gene, "$"), gene_call))
-            total <- length(grep(paste0("^", gene, ",|", ",", gene, "$|", ",", gene, ",|", "^", gene, "$"), gene_call))
-
-            if (total/length(gene_call) >= appearance)
-                if ((sa/total) < thresh)
-                  NR_tmp <- c(NR_tmp, gene)
+    non_reliable_genes <- sapply(as.character(unique(clip_db$SUBJECT)), function(sample_name){
+      gene_call <- clip_db$V_CALL[clip_db$SUBJECT == sample_name]
+      unlist(lapply(GENE.loc.NoPseudo, function(gene){
+        sub <- grep(paste0("((?:,|^)", gene, "\\*[[:digit:]]*[\\_[[:alnum:]]*]*(?:,|$))"), gene_call,perl = T, value = T)
+        total <- length(sub)
+        if (total/length(gene_call) >= appearance){
+          sa <- length(grep(paste0("^(",gene,"\\*[[:digit:]]*[\\_[[:alnum:]]*]*,?)+$"), sub, perl = T))
+          if (sa/total < thresh) return(gene)
         }
 
-        if (!is.null(NR_tmp)) non_reliable_genes[[sample_name]] <- NR_tmp
-    }
+      }), FALSE, FALSE)}, USE.NAMES = T, simplify = F)
     return(non_reliable_genes)
 }
