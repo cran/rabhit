@@ -4,9 +4,16 @@
 \alias{plotHaplotype}
 \title{Graphical output of an inferred haplotype}
 \usage{
-plotHaplotype(hap_table, html_output = FALSE, gene_sort = c("name",
-  "position"), text_size = 14, removeIGH = TRUE, plotYaxis = TRUE,
-  chain = c("IGH", "IGK", "IGL"), dir)
+plotHaplotype(
+  hap_table,
+  html_output = FALSE,
+  gene_sort = c("name", "position"),
+  text_size = 14,
+  removeIGH = TRUE,
+  plotYaxis = TRUE,
+  chain = c("IGH", "IGK", "IGL"),
+  dir
+)
 }
 \arguments{
 \item{hap_table}{haplotype summary table. See details.}

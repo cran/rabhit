@@ -31,7 +31,7 @@ urlcolor: blue
 geometry: margin=1in
 fontsize: 11pt
 vignette: >
-  %\VignetteIndexEntry{Haplotype and deletion inference from B-cell repertiore} 
+  %\VignetteIndexEntry{Haplotype and deletion inference from B-cell repertoire} 
   %\usepackage[utf8]{inputenc}
   %\VignetteEngine{knitr::rmarkdown} 
 ---
@@ -107,7 +107,7 @@ To obtain the most reliable result we suggest following the data pre-processing 
 
 # Running RAbHIT
 
-To load rabhit will run the following:
+To load RAbHIT we'll run the following:
 
 ```{r, eval=TRUE, message=FALSE, warning=FALSE}
 library(rabhit)
@@ -144,6 +144,9 @@ haplo_db_J6 <- createFullHaplotype(clip_db, toHap_col=c("V_CALL","D_CALL"),
 ```{r, eval=TRUE, warning=FALSE}
 head(haplo_db_J6,3)
 ```
+
+
+We can plot the haplotype map using the `plotHaplotype` function. Each row represents a different gene and the genes are ordered by the chromosome location. Each color represents the different alleles, light gray represents an unknown, dark gray a deletion and off-white a non-reliable allele annotation. The blues represent the confidence level of the inference ($lK$). The most left panels show the count for each allele on each chromosome. The middle panels show the allele inference for each gene on each chromosome, The most right panels show the confidence level of the inference. non reliable alleles are annotated with `[*]` and a number and are found below the graph.
 
 ```{r, eval=TRUE, warning=FALSE,fig.width=15,fig.height=10}
 # Plotting the haplotype map
@@ -198,9 +201,9 @@ hapDendo(haplo_comb)
 
 #### Compare multiple haplotypes
 
-The `createFullHaplotype` function infers haplotypes for multiple individuals at once, using the `SUBJECT` column to distinguish between the different individuals. We can then compare the individual haplotypes using the `hapHeatmap` function. This function generates a heatmap of the alleles inferred for each chromosome.
+The `createFullHaplotype` function infers haplotypes for multiple individuals at once, using the `SUBJECT` column to distinguish between the different individuals. We can then compare the individual haplotypes using the `hapHeatmap` function. This function generates a heatmap of the alleles inferred for each chromosome. The novel alleles are annotated with `^` and a number, while the non reliable alleles are annotated with `[*]` and a number and are found below the graph. This new annotation allows to distinguish better between different alleles. 
 
-```{r, eval=TRUE, warning=FALSE, fig.width=12, fig.height=12}
+```{r, cache = T, eval=TRUE, warning=FALSE, fig.width=12, fig.height=12}
 # Removing the individual I5_FR1 with the paritial V coverage sequence.
 clip_dbs <- samples_db[samples_db$SUBJECT!='I5_FR2', ]
 
@@ -208,8 +211,19 @@ clip_dbs <- samples_db[samples_db$SUBJECT!='I5_FR2', ]
 haplo_db <- createFullHaplotype(clip_dbs, toHap_col=c("V_CALL","D_CALL"),
                         hapBy_col="J_CALL", hapBy="IGHJ6", toHap_GERM=c(HVGERM, HDGERM))
 # Plot the haplotype inferred heatmap
-hapHeatmap(haplo_db)
+p.list <- hapHeatmap(haplo_db)
+
+# The function return a list with the plot and the optimal width and height
+# we can use both parametrs to render the plot to the desired size.
+width <- p.list$width
+height <- p.list$height
+
 ``` 
+
+```{r, echo = F, cache = T, eval=TRUE, warning=FALSE, fig.width=width, fig.height=height, }
+# Plotting the heatmap
+p.list$p
+```
 
 ## Inferring double chromosome deletion by relative gene usage
 
@@ -311,7 +325,7 @@ deletionHeatmap(haplo_db)
 ```
 
 
-## Infering D/J single chromosome deletion by V pooled approach
+## Inferring D/J single chromosome deletion by V pooled approach
 
 Since V gene heterozygosity is extremely common, using V genes as anchors for haplotype inference could increase the number of people for which D and J haplotype can be inferred. However, since there are far more V genes than J genes, the relative frequencies of them are lower. Therefore, to obtain a reliable haplotype inference using V genes as anchors, the sequence depth of the dataset has to be much greater than when using J6.
 

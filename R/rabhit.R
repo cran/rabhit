@@ -41,34 +41,37 @@
 #'  }
 #'
 #' @import   ggplot2
-#' @import   graphics
 #' @import   methods
 #' @import   utils
 #' @import   dendextend
-#' @importFrom  cowplot      get_legend plot_grid ggdraw draw_label background_grid
-#' @importFrom  gridExtra    arrangeGrob
-#' @importFrom  plotly       ggplotly subplot
-#' @importFrom  dplyr        do n desc funs %>%
-#'                           as_data_frame data_frame data_frame_
-#'                           bind_cols bind_rows combine rowwise slice
-#'                           filter filter_ select select_ arrange arrange_
-#'                           group_by group_by_ ungroup
-#'                           mutate mutate_ summarize summarize_
-#'                           mutate_at summarize_at count_ count
-#'                           rename rename_ transmute transmute_ pull ungroup row_number
-#' @importFrom  data.table   := rbindlist data.table .N
-#' @importFrom  reshape2     melt
-#' @importFrom  gtools       ddirichlet
-#' @importFrom  stats        hclust as.dendrogram as.dist binom.test p.adjust setNames weighted.mean
-#' @importFrom  ggdendro     dendro_data segment
-#' @importFrom  htmlwidgets  saveWidget
-#' @importFrom  gtable       gtable_filter
-#' @importFrom  grDevices    dev.off pdf
-#' @importFrom  alakazam     getGene
-#' @importFrom  rlang        .data
-#' @importFrom  tigger       sortAlleles
-#' @importFrom  RColorBrewer brewer.pal
-#' @importFrom  tidyr        separate_rows
-#' @importFrom  stringi      stri_detect_regex stri_detect_fixed
+#' @importFrom  plotly           ggplotly subplot
+#' @importFrom  graphics         grid image axis points text par plot
+#' @importFrom  cowplot          get_legend plot_grid ggdraw draw_label background_grid
+#' @importFrom  gridExtra        arrangeGrob
+#' @importFrom  dplyr            do n desc funs %>% distinct
+#'                               as_data_frame data_frame data_frame_
+#'                               bind_cols bind_rows combine rowwise slice
+#'                               filter filter_ select select_ arrange arrange_
+#'                               group_by group_by_ ungroup
+#'                               mutate mutate_ summarize summarize_
+#'                               mutate_at summarize_at count_ count
+#'                               rename rename_ transmute transmute_ pull ungroup row_number
+#' @importFrom  data.table       := rbindlist data.table .N setDT CJ setorderv setkey .SD
+#' @importFrom  reshape2         melt
+#' @importFrom  gtools           ddirichlet
+#' @importFrom  stats            hclust as.dendrogram as.dist binom.test p.adjust setNames weighted.mean
+#' @importFrom  ggdendro         dendro_data segment
+#' @importFrom  htmlwidgets      saveWidget
+#' @importFrom  gtable           gtable_filter
+#' @importFrom  grDevices        dev.off pdf recordPlot dev.control
+#' @importFrom  alakazam         getGene
+#' @importFrom  rlang            .data
+#' @importFrom  tigger           sortAlleles
+#' @importFrom  RColorBrewer     brewer.pal
+#' @importFrom  tidyr            separate_rows
+#' @importFrom  stringi          stri_detect_regex stri_detect_fixed
+#' @importFrom  grid             gpar textGrob
+#' @importFrom  splitstackshape  cSplit
+#' @importFrom  fastmatch        %fin%
 NULL
 

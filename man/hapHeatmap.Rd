@@ -4,9 +4,20 @@
 \alias{hapHeatmap}
 \title{Graphical output of alleles division by chromosome}
 \usage{
-hapHeatmap(hap_table, chain = c("IGH", "IGK", "IGL"),
-  gene_sort = "position", removeIGH = TRUE, lk_cutoff = 1,
-  mark_low_lk = TRUE)
+hapHeatmap(
+  hap_table,
+  chain = c("IGH", "IGK", "IGL"),
+  gene_sort = "position",
+  removeIGH = TRUE,
+  lk_cutoff = 1,
+  mark_low_lk = TRUE,
+  size_annot = 1.5,
+  color_y = NULL,
+  order_subject = NULL,
+  file = NULL,
+  size_text = NULL,
+  ylabel_size = 1
+)
 }
 \arguments{
 \item{hap_table}{haplotype summary table. See details.}
@@ -21,9 +32,29 @@ if by 'position' only functional genes are used and are ordered by their chromos
 \item{lk_cutoff}{the lK cutoff value to be considerd low for texture layer. Defualt is lK<1.}
 
 \item{mark_low_lk}{if TRUE, a texture is add for low lK values. Defualt is TRUE.}
+
+\item{size_annot}{size of bottom annotation text. Defualt is 1.5 .}
+
+\item{color_y}{named list of the colors for y axis labels.}
+
+\item{order_subject}{order subject by a vecor.}
+
+\item{file}{file path for rendering the plot to pdf. If non is supplied than the plot is retured as object. Defualt is NULL.}
+
+\item{size_text}{text size for annotations.}
+
+\item{ylabel_size}{text size for y axis labels.}
 }
 \value{
-A heat-map visualization of the haplotype inference for multiple samples.
+A list with the following:
+
+\itemize{
+  \item \code{'p'}:        heat-map visualization of the haplotype inference for multiple samples.
+  \item \code{'width'}:    Optimal width value for rendering plot.
+  \item \code{'height'}:   Optimal width value for rendering plot.
+}
+
+When a file is supplied the graph is also rendered to pdf.
 }
 \description{
 The \code{hapHeatmap} function generates a graphical output of the alleles per gene in multiple samples.
@@ -33,6 +64,6 @@ A \code{data.frame} created by \code{createFullHaplotype}.
 }
 \examples{
 # Plotting haplotpe heatmap
-hapHeatmap(samplesHaplotype)
-
+p <- hapHeatmap(samplesHaplotype)
+p$p
 }

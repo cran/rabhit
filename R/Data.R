@@ -96,6 +96,65 @@
 #' @keywords data
 "HJGERM"
 
+#' Human IGKV germlines
+#'
+#' A \code{character} vector of all 342 human IGKV germline gene segment alleles
+#' in IMGT Gene-db release 2019-11-18.
+#'
+#' @name KVGERM
+#' @docType data
+#' @format Values correspond to IMGT-gaped nuceltoide sequences (with
+#' nucleotides capitalized and gaps represented by '.').
+#' @keywords data
+"KVGERM"
+
+#' Human IGKJ germlines
+#'
+#' A \code{character} vector of all 342 human IGKJ germline gene segment alleles
+#' in IMGT Gene-db release 2019-11-18.
+#'
+#' @name KJGERM
+#' @docType data
+#' @format Values correspond to IMGT-gaped nuceltoide sequences (with
+#' nucleotides capitalized and gaps represented by '.').
+#' @keywords data
+"KJGERM"
+
+#' Human IGLV germlines
+#'
+#' A \code{character} vector of all 342 human IGLV germline gene segment alleles
+#' in IMGT Gene-db release 2019-11-18.
+#'
+#' @name KVGERM
+#' @docType data
+#' @format Values correspond to IMGT-gaped nuceltoide sequences (with
+#' nucleotides capitalized and gaps represented by '.').
+#' @keywords data
+"LVGERM"
+
+#' Human IGLJ germlines
+#'
+#' A \code{character} vector of all 342 human IGLJ germline gene segment alleles
+#' in IMGT Gene-db release 2019-11-18.
+#'
+#' @name LJGERM
+#' @docType data
+#' @format Values correspond to IMGT-gaped nuceltoide sequences (with
+#' nucleotides capitalized and gaps represented by '.').
+#' @keywords data
+"LJGERM"
+
+#' Human germlines
+#'
+#' A list of the germline genes from the human immunoglobulin loci
+#'
+#' @name GERM
+#' @docType data
+#' @format Values correspond to IMGT-gaped nuceltoide sequences (with
+#' nucleotides capitalized and gaps represented by '.').
+#' @keywords data
+"GERM"
+
 #### Sysdata ####
 
 # Human IG germlines location @format A nested list with three enteries, each a vector of the IG chains (IGH, IGL, and IGK) genes ordered by location.

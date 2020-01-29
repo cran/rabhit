@@ -440,11 +440,11 @@ deletionsByBinom <- function(clip_db, chain = c("IGH", "IGK", "IGL"), nonReliabl
 #'
 #'
 #' @param  clip_db                  a \code{data.frame} in Change-O format. See details.
+#' @param  chain                    the IG chain: IGH,IGK,IGL. Default is IGH.
 #' @param  deletion_col             a vector of column names for which single chromosome deletions should be inferred. Default is J_CALL and D_CALL.
 #' @param  count_thresh             integer, the minimun number of sequences mapped to a specific V gene to be included in the V pooled inference.
 #' @param  deleted_genes            double chromosome deletion summary table. A \code{data.frame} created by \code{deletionsByBinom}.
 #' @param  min_minor_fraction       the minimum minor allele fraction to be used as an anchor gene. Default is 0.3
-#'
 #' @param  kThreshDel               the minimum lK (log10 of the Bayes factor) to call a deletion. Defualt is 3.
 #' @param  nonReliable_Vgenes       a list of known non reliable gene assignments. A \code{list} created by \code{nonReliableVGenes}.
 #'
@@ -479,9 +479,16 @@ deletionsByBinom <- function(clip_db, chain = c("IGH", "IGK", "IGL"), nonReliabl
 #' }
 #' @export
 # not for light chain
-deletionsByVpooled <- function(clip_db, deletion_col = c("D_CALL"), count_thresh = 50, deleted_genes = "", min_minor_fraction = 0.3,
+deletionsByVpooled <- function(clip_db, chain = c("IGH","IGK","IGL"), deletion_col = c("D_CALL","J_CALL"), count_thresh = 50, deleted_genes = "", min_minor_fraction = 0.3,
     kThreshDel = 3, nonReliable_Vgenes = c()) {
 
+    if (missing(chain)) {
+      chain = "IGH"
+    }
+    chain <- match.arg(chain)
+
+    if(chain != "IGH") deletion_col = "J_CALL"
+    deletion_col <- match.arg(deletion_col)
 
     if (!("SUBJECT" %in% names(clip_db))) {
         clip_db$SUBJECT <- "S1"
@@ -492,7 +499,8 @@ deletionsByVpooled <- function(clip_db, deletion_col = c("D_CALL"), count_thresh
 
         clip_db_sub <- clip_db[clip_db$SUBJECT == sample_name, ]
         if (is.data.frame(deleted_genes))
-            deleted_genes_df <- deleted_genes %>% filter(.data$SUBJECT == sample_name, grepl("IGHD|IGHJ", .data$GENE)) else deleted_genes_df <- c()
+            deleted_genes_df <- deleted_genes %>% filter(.data$SUBJECT == sample_name,
+                                                         grepl(paste0(chain,c("D","J"),collapse = "|"), .data$GENE)) else deleted_genes_df <- c()
 
         ### remove non reliable V genes prior to pooling
         if (is.list(nonReliable_Vgenes))
@@ -520,13 +528,12 @@ deletionsByVpooled <- function(clip_db, deletion_col = c("D_CALL"), count_thresh
         if (length(GENES) > 0) {
             print(paste0("The following genes used for pooled deletion detection for sample ", sample_name))
             print(paste(GENES, sep = ","))
-            toHapGerm <- if (deletion_col == "D_CALL")
-                HDGERM else HJGERM
+            toHapGerm <- unlist(unname(GERM[[chain]][deletion_col]))
             for (G in GENES) {
 
                 full.hap <- createFullHaplotype(clip_db_sub, toHap_col = deletion_col, hapBy_col = "V_CALL", hapBy = G,
                                                 toHap_GERM = toHapGerm, relative_freq_priors = T,
-                  kThreshDel = kThreshDel, rmPseudo = T, deleted_genes = deleted_genes_df, chain = "IGH")
+                  kThreshDel = kThreshDel, rmPseudo = T, deleted_genes = deleted_genes_df, chain = chain)
 
                 full.hap$V_ALLELE_1 <- strsplit(names(full.hap)[3], "_")[[1]][2]
                 full.hap$V_ALLELE_2 <- strsplit(names(full.hap)[4], "_")[[1]][2]
@@ -537,7 +544,12 @@ deletionsByVpooled <- function(clip_db, deletion_col = c("D_CALL"), count_thresh
 
             }
         } else {
+            if(sample_name == tail(unique(clip_db$SUBJECT),1)){
             stop("No heterozygous V genes found for deletion detection, try changing the parameters")
+            }else{
+              message(paste0("No heterozygous V genes found for ",sample_name," deletion detection, try changing the parameters"))
+              next()
+            }
         }
 
         GENES <- unlist(sapply(names(V.df), function(G) {
@@ -550,7 +562,7 @@ deletionsByVpooled <- function(clip_db, deletion_col = c("D_CALL"), count_thresh
             d.del.df <- c()
 
             for (G in GENES) {
-                tmp <- V.df[[G]] %>% filter(.data$SUBJECT == sample_name, grepl("IGHD|IGHJ", .data$GENE))
+                tmp <- V.df[[G]] %>% filter(.data$SUBJECT == sample_name, grepl(paste0(chain,c("D","J"),collapse = "|"), .data$GENE))
                 tmp$DELETION <- apply(tmp, 1, function(x) {
                   if (x[3] == "Unk" & x[4] != "Unk" | x[3] != "Unk" & x[4] == "Unk") {
                     return(1)
@@ -626,7 +638,7 @@ deletionsByVpooled <- function(clip_db, deletion_col = c("D_CALL"), count_thresh
             d.del.df <- rbind(d.del.df, as.data.frame(tmp.df.slct.all))
             d.del.df.pooled <- d.del.df %>% filter(.data$V_GENE == "V(pooled)") %>% select(- .data$V_GENE)
             d.del.df.pooled$K <- round(as.numeric(d.del.df.pooled$K), digits = 2)
-            d.del.df.pooled$GENE <- factor(x = d.del.df.pooled$GENE, levels = GENE.loc[["IGH"]])
+            d.del.df.pooled$GENE <- factor(x = d.del.df.pooled$GENE, levels = GENE.loc[[chain]])
         }
         del.df <- rbind(del.df, d.del.df.pooled)
     }

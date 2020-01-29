@@ -4,15 +4,21 @@
 \alias{deletionHeatmap}
 \title{Graphical output of single chromosome deletions}
 \usage{
-deletionHeatmap(hap_table, kThreshDel = 3, chain = c("IGH", "IGK",
-  "IGL"))
+deletionHeatmap(
+  hap_table,
+  chain = c("IGH", "IGK", "IGL"),
+  kThreshDel = 3,
+  html_output = FALSE
+)
 }
 \arguments{
 \item{hap_table}{haplotype summary table. See details.}
 
+\item{chain}{the IG chain: IGH,IGK,IGL. Default is IGH.}
+
 \item{kThreshDel}{the minimum lK (log10 of the Bayes factor) used in \code{createFullHaplotype} to call a deletion. Indicates the color for strong deletion. Defualt is 3.}
 
-\item{chain}{the IG chain: IGH,IGK,IGL. Default is IGH.}
+\item{html_output}{If TRUE, a html5 interactive graph is outputed insteaed of the normal plot. Defualt is FALSE}
 }
 \value{
 A single chromosome deletion visualization.

@@ -4,10 +4,16 @@
 \alias{plotDeletionsByVpooled}
 \title{Graphical output for single chromosome D or J gene deletions according to V pooled method}
 \usage{
-plotDeletionsByVpooled(del.df, K_ranges = c(3, 7))
+plotDeletionsByVpooled(
+  del.df,
+  chain = c("IGH", "IGK", "IGL"),
+  K_ranges = c(3, 7)
+)
 }
 \arguments{
-\item{del.df}{a \code{data.frame} created by \code{deletionsByVpooled}.}
+\item{del.df}{a \code{data.frame} created by \code{deletionsByVpooled}}
+
+\item{chain}{the IG chain: IGH,IGK,IGL. Default is IGH..}
 
 \item{K_ranges}{vector of one or two integers for log(K) certainty level thresholds}
 }

@@ -4,11 +4,20 @@
 \alias{createFullHaplotype}
 \title{Anchor gene haplotype inference}
 \usage{
-createFullHaplotype(clip_db, toHap_col = c("V_CALL", "D_CALL"),
-  hapBy_col = "J_CALL", hapBy = "IGHJ6", toHap_GERM,
-  relative_freq_priors = TRUE, kThreshDel = 3, rmPseudo = TRUE,
-  deleted_genes = c(), nonReliable_Vgenes = c(),
-  min_minor_fraction = 0.3, chain = c("IGH", "IGK", "IGL"))
+createFullHaplotype(
+  clip_db,
+  toHap_col = c("V_CALL", "D_CALL"),
+  hapBy_col = "J_CALL",
+  hapBy = "IGHJ6",
+  toHap_GERM,
+  relative_freq_priors = TRUE,
+  kThreshDel = 3,
+  rmPseudo = TRUE,
+  deleted_genes = c(),
+  nonReliable_Vgenes = c(),
+  min_minor_fraction = 0.3,
+  chain = c("IGH", "IGK", "IGL")
+)
 }
 \arguments{
 \item{clip_db}{a \code{data.frame} in Change-O format. See details.}

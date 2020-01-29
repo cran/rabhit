@@ -4,8 +4,11 @@
 \alias{deletionsByBinom}
 \title{Double chromosome deletion by relative gene usage}
 \usage{
-deletionsByBinom(clip_db, chain = c("IGH", "IGK", "IGL"),
-  nonReliable_Vgenes = c())
+deletionsByBinom(
+  clip_db,
+  chain = c("IGH", "IGK", "IGL"),
+  nonReliable_Vgenes = c()
+)
 }
 \arguments{
 \item{clip_db}{a \code{data.frame} in Change-O format. See details.}

@@ -3,7 +3,6 @@
 \docType{package}
 \name{rabhit}
 \alias{rabhit}
-\alias{rabhit-package}
 \title{The RAbHIT package}
 \description{
 The \code{rabhit} package provides a robust novel method for determining

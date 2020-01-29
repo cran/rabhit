@@ -4,9 +4,14 @@
 \alias{hapDendo}
 \title{Hierarchical clustering of haplotypes graphical output}
 \usage{
-hapDendo(hap_table, chain = c("IGH", "IGK", "IGL"),
-  gene_sort = c("name", "position"), removeIGH = TRUE,
-  mark_low_lk = TRUE, lk_cutoff = 1)
+hapDendo(
+  hap_table,
+  chain = c("IGH", "IGK", "IGL"),
+  gene_sort = c("name", "position"),
+  removeIGH = TRUE,
+  mark_low_lk = TRUE,
+  lk_cutoff = 1
+)
 }
 \arguments{
 \item{hap_table}{haplotype summary table. See details.}
