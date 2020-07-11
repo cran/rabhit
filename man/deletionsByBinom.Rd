@@ -11,7 +11,7 @@ deletionsByBinom(
 )
 }
 \arguments{
-\item{clip_db}{a \code{data.frame} in Change-O format. See details.}
+\item{clip_db}{a \code{data.frame} in AIRR format. See details.}
 
 \item{chain}{the IG chain: IGH,IGK,IGL. Default is IGH.}
 
@@ -22,24 +22,24 @@ A \code{data.frame}, in which each row is the double chomosome deletion inferenc
 
 The output containes the following columns:
 \itemize{
- \item \code{SUBJECT}:       the subject name.
- \item \code{GENE}:          the gene call
- \item \code{FRAC}:          the relative gene usage of the gene
- \item \code{CUTOFF}:        the the cutoff of for the binomial test
- \item \code{PVAL}:          the p-value of the binomial test
- \item \code{DELETION}:      if a double chromosome deletion event of a gene occured.
+ \item \code{subject}:       the subject name.
+ \item \code{gene}:          the gene call
+ \item \code{frac}:          the relative gene usage of the gene
+ \item \code{cutoff}:        the the cutoff of for the binomial test
+ \item \code{pval}:          the p-value of the binomial test
+ \item \code{deletion}:      if a double chromosome deletion event of a gene occured.
 }
 }
 \description{
 The \code{deletionsByBinom} function inferes double chromosome deletion events by relative gene usage.
 }
 \details{
-The function accepts a \code{data.frame} in Change-O format (\url{https://changeo.readthedocs.io/en/version-0.4.1---airr-standards/standard.html}) containing the following columns:
+The function accepts a \code{data.frame} in AIRR format (\url{https://changeo.readthedocs.io/en/stable/standard.html}) containing the following columns:
 \itemize{
-  \item \code{'SUBJECT'}: The subject name
-  \item \code{'V_CALL'}: V allele call(s) (in an IMGT format)
-  \item \code{'D_CALL'}: D allele call(s) (in an IMGT format, only for heavy chains)
-  \item \code{'J_CALL'}: J allele call(s) (in an IMGT format)
+  \item \code{'subject'}: The subject name
+  \item \code{'v_call'}: V allele call(s) (in an IMGT format)
+  \item \code{'d_call'}: D allele call(s) (in an IMGT format, only for heavy chains)
+  \item \code{'j_call'}: J allele call(s) (in an IMGT format)
 }
 }
 \examples{
@@ -47,7 +47,7 @@ The function accepts a \code{data.frame} in Change-O format (\url{https://change
 data(samples_db)
 
 # Selecting a single individual
-clip_db = samples_db[samples_db$SUBJECT=='I5', ]
+clip_db = samples_db[samples_db$subject=='I5', ]
 # Infering haplotype
 del_binom_df = deletionsByBinom(clip_db)
 head(del_binom_df)

@@ -4,7 +4,9 @@
 \name{samplesHaplotype}
 \alias{samplesHaplotype}
 \title{Example haplotype inference results}
-\format{A \code{data.frame}, in which each row is the haplotype inference summary of a gene of an individual, from the column selected to prefrom the haplptype infrence on.}
+\format{
+A \code{data.frame}, in which each row is the haplotype inference summary of a gene of an individual, from the column selected to prefrom the haplptype infrence on.
+}
 \usage{
 samplesHaplotype
 }

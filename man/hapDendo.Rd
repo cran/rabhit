@@ -38,6 +38,6 @@ A \code{data.frame} created by \code{createFullHaplotype}.
 }
 \examples{
 # Plotting haplotype hierarchical clustering based on the Jaccard distance
-hapDendo(samplesHaplotype)
+\donttest{hapDendo(samplesHaplotype)}
 
 }

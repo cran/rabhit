@@ -6,8 +6,8 @@
 \usage{
 createFullHaplotype(
   clip_db,
-  toHap_col = c("V_CALL", "D_CALL"),
-  hapBy_col = "J_CALL",
+  toHap_col = c("v_call", "d_call"),
+  hapBy_col = "j_call",
   hapBy = "IGHJ6",
   toHap_GERM,
   relative_freq_priors = TRUE,
@@ -20,11 +20,11 @@ createFullHaplotype(
 )
 }
 \arguments{
-\item{clip_db}{a \code{data.frame} in Change-O format. See details.}
+\item{clip_db}{a \code{data.frame} in AIRR format. See details.}
 
-\item{toHap_col}{a vector of column names for which a haplotype should be inferred. Default is V_CALL and D_CALL.}
+\item{toHap_col}{a vector of column names for which a haplotype should be inferred. Default is v_call and d_call}
 
-\item{hapBy_col}{column name of the anchor gene. Default is J_CALL.}
+\item{hapBy_col}{column name of the anchor gene. Default is j_call}
 
 \item{hapBy}{a string of the anchor gene name. Default is IGHJ6.}
 
@@ -49,33 +49,33 @@ A \code{data.frame}, in which each row is the haplotype inference summary of a g
 
 The output containes the following columns:
 \itemize{
- \item \code{SUBJECT}:        the subject name.
- \item \code{GENE}:           the gene name.
+ \item \code{subject}:        the subject name.
+ \item \code{gene}:           the gene name.
  \item Anchor gene allele 1:  the haplotype inference for chromosome one. The column name is the anchor gene with the first allele.
  \item Anchor gene allele 2:  the haplotype inference for chromosome two. The column name is the anchor gene with the second allele.
- \item \code{ALLELES}:        allele calls for the gene.
- \item \code{PRIORS_ROW}:     priors based on relative allele usage of the anchor gene.
- \item \code{PRIORS_COL}:     priors based on relative allele usage of the inferred gene.
- \item \code{COUNTS1}:        the appereance count on each chromosome of the first allele from \code{ALLELES}, the counts are seperated by a comma.
- \item \code{K1}:             the Bayesian factor value for the first allele (from \code{ALLELES}) inference.
- \item \code{COUNTS2}:        the appereance count on each chromosome of the second allele from \code{ALLELES}, the counts are seperated by a comma.
- \item \code{K2}:             the Bayesian factor value for the second allele (from \code{ALLELES}) inference.
- \item \code{COUNTS3}:        the appereance count on each chromosome of the third allele from \code{ALLELES}, the counts are seperated by a comma.
- \item \code{K3}:             the Bayesian factor value for the third allele (from \code{ALLELES}) inference.
- \item \code{COUNTS4}:        the appereance count on each chromosome of the fourth allele from \code{ALLELES}, the counts are seperated by a comma.
- \item \code{K4}:             the Bayesian factor value for the fourth allele (from \code{ALLELES}) inference.
+ \item \code{alleles}:        allele calls for the gene.
+ \item \code{proirs_row}:     priors based on relative allele usage of the anchor gene.
+ \item \code{proirs_col}:     priors based on relative allele usage of the inferred gene.
+ \item \code{counts1}:        the appereance count on each chromosome of the first allele from \code{alleles}, the counts are seperated by a comma.
+ \item \code{k1}:             the Bayesian factor value for the first allele (from \code{alleles}) inference.
+ \item \code{counts2}:        the appereance count on each chromosome of the second allele from \code{alleles}, the counts are seperated by a comma.
+ \item \code{k2}:             the Bayesian factor value for the second allele (from \code{alleles}) inference.
+ \item \code{counts3}:        the appereance count on each chromosome of the third allele from \code{alleles}, the counts are seperated by a comma.
+ \item \code{k3}:             the Bayesian factor value for the third allele (from \code{alleles}) inference.
+ \item \code{counts4}:        the appereance count on each chromosome of the fourth allele from \code{alleles}, the counts are seperated by a comma.
+ \item \code{k4}:             the Bayesian factor value for the fourth allele (from \code{alleles}) inference.
 }
 }
 \description{
 The \code{createFullHaplotype} functions infers haplotype based on an anchor gene.
 }
 \details{
-Function accepts a \code{data.frame} in Change-O format (\url{https://changeo.readthedocs.io/en/version-0.4.1---airr-standards/standard.html}) containing the following columns:
+Function accepts a \code{data.frame} in AIRR format (\url{https://changeo.readthedocs.io/en/stable/standard.html}) containing the following columns:
 \itemize{
-  \item \code{'SUBJECT'}: The subject name
-  \item \code{'V_CALL'}: V allele call(s) (in an IMGT format)
-  \item \code{'D_CALL'}: D allele call(s) (in an IMGT format, only for heavy chains)
-  \item \code{'J_CALL'}: J allele call(s) (in an IMGT format)
+  \item \code{'subject'}: The subject name
+  \item \code{'v_call'}: V allele call(s) (in an IMGT format)
+  \item \code{'d_call'}: D allele call(s) (in an IMGT format, only for heavy chains)
+  \item \code{'j_call'}: J allele call(s) (in an IMGT format)
 }
 }
 \examples{
@@ -83,11 +83,11 @@ Function accepts a \code{data.frame} in Change-O format (\url{https://changeo.re
 data(samples_db, HVGERM, HDGERM)
 
 # Selecting a single individual
-clip_db = samples_db[samples_db$SUBJECT=='I5', ]
+clip_db = samples_db[samples_db$subject=='I5', ]
 
 # Infering haplotype
-haplo_db = createFullHaplotype(clip_db,toHap_col=c('V_CALL','D_CALL'),
-hapBy_col='J_CALL',hapBy='IGHJ6',toHap_GERM=c(HVGERM,HDGERM))
+haplo_db = createFullHaplotype(clip_db,toHap_col=c('v_call','d_call'),
+hapBy_col='j_call',hapBy='IGHJ6',toHap_GERM=c(HVGERM,HDGERM))
 
 
 }

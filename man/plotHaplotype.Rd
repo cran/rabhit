@@ -45,7 +45,7 @@ A \code{data.frame} in a haplotype format created by \code{createFullHaplotype} 
 \examples{
 
 # Selecting a single individual from the haplotype samples data
-haplo_db = samplesHaplotype[samplesHaplotype$SUBJECT=='I5', ]
+haplo_db = samplesHaplotype[samplesHaplotype$subject=='I5', ]
 
 # plot haplotype
 plotHaplotype(haplo_db)

@@ -4,8 +4,10 @@
 \name{LJGERM}
 \alias{LJGERM}
 \title{Human IGLJ germlines}
-\format{Values correspond to IMGT-gaped nuceltoide sequences (with
-nucleotides capitalized and gaps represented by '.').}
+\format{
+Values correspond to IMGT-gaped nuceltoide sequences (with
+nucleotides capitalized and gaps represented by '.').
+}
 \usage{
 LJGERM
 }

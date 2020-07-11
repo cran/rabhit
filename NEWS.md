@@ -1,7 +1,18 @@
+Version 0.1.5: June 10, 2020
+-------------------------------------------------------------------------------
+
+Backwards Incompatible Changes:
+
++ Changed default expected data format from the Change-O data format to the AIRR Rearrangement standard. For example, where functions used the column name V_CALL (Change-O) as the default to identify the field that stored the V gene calls, they now use v_call (AIRR). Scripts that relied on default values (previously, toHap_col="V_CALL"), will now fail if calls to the functions are not updated to reflect the correct value for the data. If data are in the Change-O format, the current default value toHap_col="v_call" will fail to identify the column with the V gene calls as the column v_call doesn't exist. In this case, toHap_col="V_CALL" needs to be specified in the function call.
++ For consistency with the style of the new data format default, field names in all other user exposed data structures have been updated to use the same font case style.
+
+General:
+
++ Updated dependencies to R >= 3.5.0, dplyr >= 1.0.0, ggplot2 >= 3.2.0, alakazam >= 1.0.0, tigger >= 1.0.0, and tidyr >=1.0.0.
+
 Version 0.1.4:  January 28, 2020
 -------------------------------------------------------------------------------
 + Fixed bug within the `hapHeatmap` visualization.
-
 
 Version 0.1.3.999:  November 18, 2019
 -------------------------------------------------------------------------------

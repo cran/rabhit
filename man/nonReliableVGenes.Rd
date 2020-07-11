@@ -7,7 +7,7 @@
 nonReliableVGenes(clip_db, thresh = 0.9, appearance = 0.01)
 }
 \arguments{
-\item{clip_db}{a \code{data.frame} in Change-O format. See details.}
+\item{clip_db}{a \code{data.frame} in AIRR format. See details.}
 
 \item{thresh}{the threshold to consider non reliable gene. Defualt is 0.9}
 
@@ -17,20 +17,20 @@ nonReliableVGenes(clip_db, thresh = 0.9, appearance = 0.01)
 a nested list of non reliable genes for all subject.
 }
 \description{
-\code{nonReliableVGenes} Takes a \code{data.frame} in Change-O format  and detect non reliable IGHV genes. A non reliable gene is
+\code{nonReliableVGenes} Takes a \code{data.frame} in AIRR format  and detect non reliable IGHV genes. A non reliable gene is
 when the ratio of the multiple assignments with a gene is below the threshold.
 }
 \details{
-The function accepts a \code{data.frame} in Change-O format (\url{https://changeo.readthedocs.io/en/version-0.4.1---airr-standards/standard.html}) containing the following columns:
+The function accepts a \code{data.frame} in AIRR format (\url{https://changeo.readthedocs.io/en/stable/standard.html}) containing the following columns:
 \itemize{
-  \item \code{'SUBJECT'}: subject names
-  \item \code{'V_CALL'}: V allele call(s) (in an IMGT format)
+  \item \code{'subject'}: subject names
+  \item \code{'v_call'}: V allele call(s) (in an IMGT format)
 }
 }
 \examples{
 # Example IGHV call data frame
-clip_db <- data.frame(SUBJECT=rep('S1',6),
-V_CALL=c('IGHV1-69*01','IGHV1-69*01','IGHV1-69*01,IGHV1-69*02',
+clip_db <- data.frame(subject=rep('S1',6),
+v_call=c('IGHV1-69*01','IGHV1-69*01','IGHV1-69*01,IGHV1-69*02',
 'IGHV4-59*01,IGHV4-61*01','IGHV4-59*01,IGHV4-31*02','IGHV4-59*01'))
 # Detect non reliable genes
 nonReliableVGenes(clip_db)

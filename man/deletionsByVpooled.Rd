@@ -7,7 +7,7 @@
 deletionsByVpooled(
   clip_db,
   chain = c("IGH", "IGK", "IGL"),
-  deletion_col = c("D_CALL", "J_CALL"),
+  deletion_col = c("d_call", "j_call"),
   count_thresh = 50,
   deleted_genes = "",
   min_minor_fraction = 0.3,
@@ -16,11 +16,11 @@ deletionsByVpooled(
 )
 }
 \arguments{
-\item{clip_db}{a \code{data.frame} in Change-O format. See details.}
+\item{clip_db}{a \code{data.frame} in AIRR format. See details.}
 
 \item{chain}{the IG chain: IGH,IGK,IGL. Default is IGH.}
 
-\item{deletion_col}{a vector of column names for which single chromosome deletions should be inferred. Default is J_CALL and D_CALL.}
+\item{deletion_col}{a vector of column names for which single chromosome deletions should be inferred. Default is j_call and d_call.}
 
 \item{count_thresh}{integer, the minimun number of sequences mapped to a specific V gene to be included in the V pooled inference.}
 
@@ -37,23 +37,23 @@ A \code{data.frame}, in which each row is the single chomosome deletion inferenc
 
 The output containes the following columns:
 \itemize{
- \item \code{SUBJECT}:       the subject name.
- \item \code{GENE}:          the gene call
- \item \code{DELETION}:      chromosome deletions inferred. Encoded 1 for deletion and 0 for no deletion.
- \item \code{K}:             the Bayesian factor value for the deletion inference.
- \item \code{COUNTS}:        the appereance count of the gene on each chromosome, the counts are seperated by a comma.
+ \item \code{subject}:       the subject name.
+ \item \code{gene}:          the gene call
+ \item \code{deletion}:      chromosome deletions inferred. Encoded 1 for deletion and 0 for no deletion.
+ \item \code{k}:             the Bayesian factor value for the deletion inference.
+ \item \code{counts}:        the appereance count of the gene on each chromosome, the counts are seperated by a comma.
 }
 }
 \description{
 The \code{deletionsByVpooled} function inferes single chromosomal deletion for D and J gene .
 }
 \details{
-The function accepts a \code{data.frame} in Change-O format (\url{https://changeo.readthedocs.io/en/version-0.4.1---airr-standards/standard.html}) containing the following columns:
+The function accepts a \code{data.frame} in AIRR format (\url{https://changeo.readthedocs.io/en/stable/standard.html}) containing the following columns:
 \itemize{
-  \item \code{'SUBJECT'}: The subject name
-  \item \code{'V_CALL'}: V allele call(s) (in an IMGT format)
-  \item \code{'D_CALL'}: D allele call(s) (in an IMGT format, only for heavy chains)
-  \item \code{'J_CALL'}: J allele call(s) (in an IMGT format)
+  \item \code{'subject'}: The subject name
+  \item \code{'v_call'}: V allele call(s) (in an IMGT format)
+  \item \code{'d_call'}: D allele call(s) (in an IMGT format, only for heavy chains)
+  \item \code{'j_call'}: J allele call(s) (in an IMGT format)
 }
 }
 \examples{
