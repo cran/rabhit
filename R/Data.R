@@ -155,6 +155,16 @@
 #' @keywords data
 "GERM"
 
+#' Human Gene order on the chromosome
+#'
+#' A list of the chains genes order by their location on the chromosomes
+#'
+#' @name GENE.loc
+#' @docType data
+#' @format A nested list with three enteries, each a vector of the IG chains (IGH, IGL, and IGK) genes ordered by location.
+#' @keywords data
+"GENE.loc"
+
 #### Sysdata ####
 
 # Human IG germlines location @format A nested list with three enteries, each a vector of the IG chains (IGH, IGL, and IGK) genes ordered by location.

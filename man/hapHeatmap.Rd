@@ -6,8 +6,8 @@
 \usage{
 hapHeatmap(
   hap_table,
-  chain = c("IGH", "IGK", "IGL"),
-  gene_sort = "position",
+  chain = c("IGH", "IGK", "IGL", "TRB", "TRA"),
+  genes_order = NULL,
   removeIGH = TRUE,
   lk_cutoff = 1,
   mark_low_lk = TRUE,
@@ -24,22 +24,21 @@ hapHeatmap(
 
 \item{chain}{the IG chain: IGH,IGK,IGL. Default is IGH.}
 
-\item{gene_sort}{if by 'name' the genes in the output are ordered lexicographically,
-if by 'position' only functional genes are used and are ordered by their chromosomal location. Default is 'position'.}
+\item{genes_order}{A vector of the genes by the desired order. Default is by GENE.loc}
 
-\item{removeIGH}{if TRUE, 'IGH'\'IGK'\'IGL' prefix is removed from gene names.}
+\item{removeIGH}{if TRUE, 'IGH'\'IGK'\'IGL'\'TRB' prefix is removed from gene names.}
 
-\item{lk_cutoff}{the lK cutoff value to be considerd low for texture layer. Defualt is lK<1.}
+\item{lk_cutoff}{the lK cutoff value to be considered low for texture layer. Default is lK<1.}
 
-\item{mark_low_lk}{if TRUE, a texture is add for low lK values. Defualt is TRUE.}
+\item{mark_low_lk}{if TRUE, a texture is add for low lK values. Default is TRUE.}
 
-\item{size_annot}{size of bottom annotation text. Defualt is 1.5 .}
+\item{size_annot}{size of bottom annotation text. Default is 1.5 .}
 
 \item{color_y}{named list of the colors for y axis labels.}
 
-\item{order_subject}{order subject by a vecor.}
+\item{order_subject}{order subject by a vector.}
 
-\item{file}{file path for rendering the plot to pdf. If non is supplied than the plot is retured as object. Defualt is NULL.}
+\item{file}{file path for rendering the plot to pdf. If non is supplied than the plot is returned as object. Default is NULL.}
 
 \item{size_text}{text size for annotations.}
 

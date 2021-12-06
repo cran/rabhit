@@ -9,9 +9,9 @@ nonReliableVGenes(clip_db, thresh = 0.9, appearance = 0.01)
 \arguments{
 \item{clip_db}{a \code{data.frame} in AIRR format. See details.}
 
-\item{thresh}{the threshold to consider non reliable gene. Defualt is 0.9}
+\item{thresh}{the threshold to consider non reliable gene. Default is 0.9}
 
-\item{appearance}{the minimun fraction of gene appearance to be considered for reliability check. Defualt is 0.01.}
+\item{appearance}{the minimum fraction of gene appearance to be considered for reliability check. Default is 0.01.}
 }
 \value{
 a nested list of non reliable genes for all subject.

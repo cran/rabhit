@@ -7,15 +7,18 @@
 deletionsByBinom(
   clip_db,
   chain = c("IGH", "IGK", "IGL"),
-  nonReliable_Vgenes = c()
+  nonReliable_Vgenes = c(),
+  genes_order = NULL
 )
 }
 \arguments{
 \item{clip_db}{a \code{data.frame} in AIRR format. See details.}
 
-\item{chain}{the IG chain: IGH,IGK,IGL. Default is IGH.}
+\item{chain}{the IG/TR chain: IGH,IGK,IGL,TRB. Default is IGH.}
 
 \item{nonReliable_Vgenes}{a list of known non reliable gene assignments. A \code{list} created by \code{nonReliableVGenes}.}
+
+\item{genes_order}{A vector of the genes by the desired order. Default is by GENE.loc}
 }
 \value{
 A \code{data.frame}, in which each row is the double chomosome deletion inference of a gene.

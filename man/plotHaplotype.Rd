@@ -7,29 +7,28 @@
 plotHaplotype(
   hap_table,
   html_output = FALSE,
-  gene_sort = c("name", "position"),
+  genes_order = NULL,
   text_size = 14,
   removeIGH = TRUE,
   plotYaxis = TRUE,
-  chain = c("IGH", "IGK", "IGL"),
+  chain = c("IGH", "IGK", "IGL", "TRB"),
   dir
 )
 }
 \arguments{
 \item{hap_table}{haplotype summary table. See details.}
 
-\item{html_output}{if TRUE, a html5 interactive graph is outputed. Defualt is FALSE.}
+\item{html_output}{if TRUE, a html5 interactive graph is outputed. Default is FALSE.}
 
-\item{gene_sort}{if by 'name' the genes in the output are ordered lexicographically,
-if by 'position' only functional genes are used and are ordered by their chromosomal location. Default is 'position'.}
+\item{genes_order}{A vector of the genes by the desired order. Default is by GENE.loc}
 
 \item{text_size}{the size of graph labels. Default is 14 (pts).}
 
-\item{removeIGH}{if TRUE, 'IGH'\'IGK'\'IGL' prefix is removed from gene names.}
+\item{removeIGH}{if TRUE, 'IGH'\'IGK'\'IGL'\'TRB' prefix is removed from gene names.}
 
 \item{plotYaxis}{if TRUE, Y axis labels (gene names) are plotted on the middle and right plots. Default is TRUE.}
 
-\item{chain}{the Ig chain: IGH,IGK,IGL. Default is IGH.}
+\item{chain}{the Ig/TR chain: IGH,IGK,IGL,TRB. Default is IGH.}
 
 \item{dir}{The output folder for saving the haplotype map for multiple individuals.}
 }

@@ -4,12 +4,21 @@
 \alias{geneUsage}
 \title{Double chromosome deletion by relative gene usage}
 \usage{
-geneUsage(clip_db, chain = c("IGH", "IGK", "IGL"))
+geneUsage(
+  clip_db,
+  chain = c("IGH", "IGK", "IGL", "TRB"),
+  genes_order = NULL,
+  rmPseudo = TRUE
+)
 }
 \arguments{
 \item{clip_db}{a \code{data.frame} in AIRR format. See details.}
 
-\item{chain}{the IG chain: IGH,IGK,IGL. Default is IGH.}
+\item{chain}{the IG/TR chain: IGH,IGK,IGL,TRB. Default is IGH.}
+
+\item{genes_order}{A vector of the genes by the desired order. Default is by GENE.loc}
+
+\item{rmPseudo}{if TRUE non-functional and pseudo genes are removed. Default is TRUE.}
 }
 \value{
 A \code{data.frame}, in which each row is the relative gene usage value per individual.

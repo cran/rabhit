@@ -1,3 +1,15 @@
+Version 0.1.6: June 10, 2020
+-------------------------------------------------------------------------------
+
+Backwards Incompatible Changes:
+
++ From this version the gene order within plots can be determined by the genes_order variable. The variable receives a vector of the ordered genes. If not supplied the default order for the genes is by the GENE.loc order which can be found in the package using `data("GENE.loc")`. 
++ Hereby, the gene_order variable has been removed. 
+
+General:
+
++ updated the package for TRB haplotypes.
+
 Version 0.1.5: June 10, 2020
 -------------------------------------------------------------------------------
 

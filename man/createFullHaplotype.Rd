@@ -9,14 +9,15 @@ createFullHaplotype(
   toHap_col = c("v_call", "d_call"),
   hapBy_col = "j_call",
   hapBy = "IGHJ6",
-  toHap_GERM,
+  toHap_GERM = NULL,
   relative_freq_priors = TRUE,
   kThreshDel = 3,
   rmPseudo = TRUE,
   deleted_genes = c(),
   nonReliable_Vgenes = c(),
   min_minor_fraction = 0.3,
-  chain = c("IGH", "IGK", "IGL")
+  single_gene = TRUE,
+  chain = c("IGH", "IGK", "IGL", "TRB")
 )
 }
 \arguments{
@@ -30,11 +31,11 @@ createFullHaplotype(
 
 \item{toHap_GERM}{a vector of named nucleotide germline sequences matching the allele calls in \code{toHap_col} columns in clip_db.}
 
-\item{relative_freq_priors}{if TRUE, the priors for Bayesian inference are estimated from the relative frequencies in clip_db. Else, priors are set to \code{c(0.5,0.5)}. Defualt is TRUE}
+\item{relative_freq_priors}{if TRUE, the priors for Bayesian inference are estimated from the relative frequencies in clip_db. Else, priors are set to \code{c(0.5,0.5)}. Default is TRUE}
 
-\item{kThreshDel}{the minimum lK (log10 of the Bayes factor) to call a deletion. Defualt is 3.}
+\item{kThreshDel}{the minimum lK (log10 of the Bayes factor) to call a deletion. Default is 3.}
 
-\item{rmPseudo}{if TRUE non-functional and pseudo genes are removed. Defualt is TRUE.}
+\item{rmPseudo}{if TRUE non-functional and pseudo genes are removed. Default is TRUE.}
 
 \item{deleted_genes}{double chromosome deletion summary table. A \code{data.frame} created by \code{deletionsByBinom}.}
 
@@ -42,7 +43,9 @@ createFullHaplotype(
 
 \item{min_minor_fraction}{the minimum minor allele fraction to be used as an anchor gene. Default is 0.3}
 
-\item{chain}{the IG chain: IGH,IGK,IGL. Default is IGH.}
+\item{single_gene}{if to only consider genes from single assignment. If true then calls where genes appear with others are discarded. If false then the calls are seperated an counted for all genes that appeared. Default is True.}
+
+\item{chain}{the IG/TR chain: IGH,IGK,IGL,TRB. Default is IGH.}
 }
 \value{
 A \code{data.frame}, in which each row is the haplotype inference summary of a gene from the column selected in \code{toHap_col}.

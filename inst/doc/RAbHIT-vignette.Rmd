@@ -187,16 +187,16 @@ names(haplo_db_D2_21)[which(names(haplo_db_D2_21)=='IGHD2-21_01')] <- "AnchorJ03
 names(haplo_db_J6)[which(names(haplo_db_J6)=='IGHJ6_02')] <- "AnchorJ02D02"
 names(haplo_db_D2_21)[which(names(haplo_db_D2_21)=='IGHD2-21_02')] <- "AnchorJ02D02"
 
-# Subseting the haplo_db_J6 dataset to include only the V genes
+# subsetting the haplo_db_J6 dataset to include only the V genes
 haplo_db_J6 <- haplo_db_J6[grep('IGHV',haplo_db_J6$gene),]
 
-# Combining the datasets rowwise
+# Combining the datasets row wise
 haplo_comb <- rbind(haplo_db_J6,haplo_db_D2_21)
 ``` 
 
 Now, we can compare the haplotypes using the `hapDendo` function.
 ```{r, eval=TRUE, warning=FALSE, fig.width=14, fig.height=6}
-# Plot the haplotype inferred dendogram
+# Plot the haplotype inferred deprogram
 hapDendo(haplo_comb)
 ``` 
 
@@ -205,7 +205,7 @@ hapDendo(haplo_comb)
 The `createFullHaplotype` function infers haplotypes for multiple individuals at once, using the `subject` column to distinguish between the different individuals. We can then compare the individual haplotypes using the `hapHeatmap` function. This function generates a heatmap of the alleles inferred for each chromosome. The novel alleles are annotated with `^` and a number, while the non reliable alleles are annotated with `[*]` and a number and are found below the graph. This new annotation allows to distinguish better between different alleles. 
 
 ```{r, cache = T, eval=TRUE, warning=FALSE, fig.width=12, fig.height=12}
-# Removing the individual I5_FR1 with the paritial V coverage sequence.
+# Removing the individual I5_FR1 with the partial V coverage sequence.
 clip_dbs <- samples_db[samples_db$subject!='I5_FR2', ]
 
 # Inferred haplotype summary table
@@ -215,7 +215,7 @@ haplo_db <- createFullHaplotype(clip_dbs, toHap_col=c("v_call","d_call"),
 p.list <- hapHeatmap(haplo_db)
 
 # The function return a list with the plot and the optimal width and height
-# we can use both parametrs to render the plot to the desired size.
+# we can use both parameters to render the plot to the desired size.
 width <- p.list$width
 height <- p.list$height
 
@@ -232,7 +232,7 @@ Gene usage tends to vary between individuals, and in some cases the relative gen
 
 
 ```{r, eval=TRUE, warning=FALSE}
-# Infering double choromosome deletions
+# Inferring double chromosome deletions
 del_binom_db <- deletionsByBinom(clip_dbs)
 head(del_binom_db)
 ```
@@ -288,7 +288,7 @@ Another way to visualize the inferred haplotype is using the interactive HTML5 p
 
 ```{r, eval=TRUE, warning=FALSE}
 # Generate interactive haplotype plot
-p <- plotHaplotype(haplo_db, html_output = TRUE)
+p <- plotHaplotype(hap_table = haplo_db, html_output = TRUE)
 ```
 
 ```{r, cache=FALSE, eval=FALSE, warning=FALSE}
@@ -312,7 +312,7 @@ For a group of individuals, the single chromosome deletions coupled with the dou
 # Detecting non reliable genes
 nonReliable_Vgenes <- nonReliableVGenes(samples_db)
 
-# Infering double chromosome deletion
+# Inferring double chromosome deletion
 del_binom_db <- deletionsByBinom(samples_db, nonReliable_Vgenes = nonReliable_Vgenes)
 
 # Inferred haplotype summary table for multiple subjects

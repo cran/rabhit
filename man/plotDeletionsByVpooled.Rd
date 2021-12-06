@@ -6,7 +6,7 @@
 \usage{
 plotDeletionsByVpooled(
   del.df,
-  chain = c("IGH", "IGK", "IGL"),
+  chain = c("IGH", "IGK", "IGL", "TRB", "TRA"),
   K_ranges = c(3, 7)
 )
 }

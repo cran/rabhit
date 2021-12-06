@@ -6,8 +6,9 @@
 \usage{
 deletionHeatmap(
   hap_table,
-  chain = c("IGH", "IGK", "IGL"),
+  chain = c("IGH", "IGK", "IGL", "TRB", "TRA"),
   kThreshDel = 3,
+  genes_order = NULL,
   html_output = FALSE
 )
 }
@@ -16,9 +17,11 @@ deletionHeatmap(
 
 \item{chain}{the IG chain: IGH,IGK,IGL. Default is IGH.}
 
-\item{kThreshDel}{the minimum lK (log10 of the Bayes factor) used in \code{createFullHaplotype} to call a deletion. Indicates the color for strong deletion. Defualt is 3.}
+\item{kThreshDel}{the minimum lK (log10 of the Bayes factor) used in \code{createFullHaplotype} to call a deletion. Indicates the color for strong deletion. Default is 3.}
 
-\item{html_output}{If TRUE, a html5 interactive graph is outputed insteaed of the normal plot. Defualt is FALSE}
+\item{genes_order}{A vector of the genes by the desired order. Default is by GENE.loc}
+
+\item{html_output}{If TRUE, a html5 interactive graph is outputed insteaed of the normal plot. Default is FALSE}
 }
 \value{
 A single chromosome deletion visualization.

@@ -12,14 +12,25 @@ NULL
 # @param    alpha_dirichlet      alpha parameter for dirichlet distribution
 # @param    epsilon    epsilon
 # @param    priors      a vector of priors
-#
+# @param    homozygous  if the tested gene agaist the anchor is homozygous
 # @return  log10 of the likelihoods
 #
 # @export
-get_probabilites_with_priors <- function(X, alpha_dirichlet = c(0.5, 0.5) * 2, epsilon = 0.01, params = c(0.5, 0.5)) {
+get_probabilites_with_priors <- function(X, alpha_dirichlet = c(0.5, 0.5) * 2, epsilon = 0.01, params = c(0.5, 0.5), homozygous = FALSE) {
     ## Hypotheses
     X <- sort(X, decreasing = TRUE)
     Number_Of_Divisions <- 0
+
+    if (grepl("TRBD2", names(X)[1])){
+      # epsilon fix for TRBD
+      epsilon <- X
+      epsilon["TRBD2*01"] <- 0.125
+      epsilon["TRBD2*02"] <- 0.04
+
+      if (homozygous) {
+        epsilon <- epsilon / 3
+      }
+    }
 
     H1 <- c(1, 0)
     H2 <- c(params[1], params[2])
@@ -104,7 +115,7 @@ createHaplotypeTable <- function(df, HapByPriors = c(0.5, 0.5), toHapByCol = TRU
 
         HapByPriors_srtd <- if (!is.null(names(HapByPriors)))
             HapByPriors[names(counts[1:2])] else HapByPriors
-        res <- get_probabilites_with_priors(counts[1:2], params = HapByPriors_srtd)
+        res <- get_probabilites_with_priors(counts[1:2], params = HapByPriors_srtd, homozygous = (nrow(df) == 1))
 
 
         # Assign allele for a chromosome If hetero in chomosome : check if anythong was assigned (equals 'unk'), if was (different than 'unk'), paste second
@@ -162,7 +173,7 @@ createHaplotypeTable <- function(df, HapByPriors = c(0.5, 0.5), toHapByCol = TRU
 #
 # @return   list of data frames for plotting
 #
-parseHapTab <- function(hap_table, chain = c("IGH", "IGK", "IGL"), count_df = TRUE, sample_name, hapBy_cols, hapBy_alleles) {
+parseHapTab <- function(hap_table, chain = c("IGH", "IGK", "IGL", "TRB", "TRA"), count_df = TRUE, sample_name, hapBy_cols, hapBy_alleles) {
 
     if (missing(chain)) {
         chain = "IGH"
@@ -354,45 +365,30 @@ parseHapTab <- function(hap_table, chain = c("IGH", "IGK", "IGL"), count_df = TR
 #
 # @param    DATA                 data frame to sort
 # @param    chain                the Ig chain: IGH,IGK,IGL. Default is IGH.
-# @param    method               the method for sorting the genes. If by 'name' the genes in the output are ordered lexicographically,
-# if by 'position' only functional genes are used and are ordered by their chromosomal location. Default is 'position'.
+# @param    genes_order           A vector of the genes by the desired order. Defualt is by GENE.loc
 # @param    removeIGH            if TRUE, 'IGH'\'IGK'\'IGL' prefix is removed from gene names.
 #
 # @return   sorted \code{data.frame}
 #
-sortDFByGene <- function(DATA, chain = c("IGH", "IGK", "IGL"), method = c("name", "position"), removeIGH = FALSE, geno = FALSE, peseudo_remove = F) {
+sortDFByGene <- function(DATA, chain = c("IGH", "IGK", "IGL", "TRB", "TRA"), genes_order = NULL, removeIGH = FALSE, geno = FALSE, peseudo_remove = F) {
     if (missing(chain)) {
         chain = "IGH"
     }
     chain <- match.arg(chain)
 
-    if (missing(method)) {
-        method = "position"
+    GENE.loc.tmp <- genes_order
+    names(GENE.loc.tmp) <- GENE.loc.tmp
+    if(peseudo_remove){
+      DATA <- DATA[!grepl("OR|NL", DATA$gene),]
+      DATA <- DATA[!(DATA$gene %in% PSEUDO[[chain]]),]
     }
-    method <- match.arg(method)
-
-    if (method == "name") {
-        DATA$gene <- factor(DATA$gene, levels = rev(sortAlleles(unique(DATA$gene), method = method)))
-        if (removeIGH) {
-            DATA$gene <- gsub("IG[H|K|L]", "", DATA$gene)
-            DATA$gene <- factor(DATA$gene, levels = rev(sortAlleles(unique(DATA$gene), method = method)))
-            if(!geno) DATA$hapBy <- gsub("IG[H|K|L]", "", DATA$hapBy)
-        }
-    } else {
-        GENE.loc.tmp <- GENE.loc[[chain]]
+    DATA$gene <- factor(DATA$gene, levels = rev(GENE.loc.tmp))
+    if (removeIGH) {
+        GENE.loc.tmp <- gsub(chain, "", GENE.loc.tmp)
         names(GENE.loc.tmp) <- GENE.loc.tmp
-        if(peseudo_remove){
-          DATA <- DATA[!grepl("OR|NL", DATA$gene),]
-          DATA <- DATA[!(DATA$gene %in% PSEUDO[[chain]]),]
-        }
+        DATA$gene <- gsub(chain, "", DATA$gene)
         DATA$gene <- factor(DATA$gene, levels = rev(GENE.loc.tmp))
-        if (removeIGH) {
-            GENE.loc.tmp <- gsub("IG[H|K|L]", "", GENE.loc.tmp)
-            names(GENE.loc.tmp) <- GENE.loc.tmp
-            DATA$gene <- gsub("IG[H|K|L]", "", DATA$gene)
-            DATA$gene <- factor(DATA$gene, levels = rev(GENE.loc.tmp))
-            if(!geno) DATA$hapBy <- gsub("IG[H|K|L]", "", DATA$hapBy)
-        }
+        if(!geno) DATA$hapBy <- gsub(chain, "", DATA$hapBy)
     }
 
     return(DATA)
@@ -556,7 +552,7 @@ binomTestDeletion <- function(GENE.usage.df, cutoff = 0.001, p.val.cutoff = 0.01
             return(paste0(GENE.usage.df$gene[i], "_", 2))
         }
     })
-    GENE.usage.df <- GENE.usage.df %>% group_by(.data$foradj) %>% mutate(pval_adj = p.adjust(.data$pval, method = "BH"))
+    GENE.usage.df <- GENE.usage.df %>% dplyr::group_by(.data$foradj) %>% mutate(pval_adj = p.adjust(.data$pval, method = "BH"))
 
 
 
@@ -592,9 +588,9 @@ binomTestDeletion <- function(GENE.usage.df, cutoff = 0.001, p.val.cutoff = 0.01
 #
 sample_size <- function(clip_db, CALL){
 
-  clip_db <- clip_db %>% select(.data$subject, !!as.name(CALL)) %>% group_by(.data$subject) %>%
-    mutate(SAMPLE.SIZE = sum(!grepl(',', !!as.name(CALL)))) %>% slice(1) %>%
-    ungroup() %>% select(.data$subject, .data$SAMPLE.SIZE)
+  clip_db <- clip_db %>% select(.data$subject, !!as.name(CALL)) %>% dplyr::group_by(.data$subject) %>%
+    dplyr::mutate(SAMPLE.SIZE = sum(!grepl(',', !!as.name(CALL)))) %>% slice(1) %>%
+    dplyr::ungroup() %>% dplyr::select(.data$subject, .data$SAMPLE.SIZE)
   SAMPLE.SIZE <- clip_db$SAMPLE.SIZE
   names(SAMPLE.SIZE) <- unique(clip_db$subject)
   return(SAMPLE.SIZE)
@@ -702,7 +698,7 @@ nonReliableAllelesText <- function(non_reliable_alleles_text, size = 4) {
     if (nrow(non_reliable_alleles_text) != 0) {
         non_reliable_alleles_text$text <- non_reliable_alleles_text$alleles
         non_reliable_alleles_text$pos <- ifelse(non_reliable_alleles_text$freq == 1, 0.5, 0.25)
-        non_reliable_alleles_text <- non_reliable_alleles_text %>% ungroup() %>% group_by(.data$gene, .data$subject, .data$hapBy) %>%
+        non_reliable_alleles_text <- non_reliable_alleles_text %>% ungroup() %>% dplyr::group_by(.data$gene, .data$subject, .data$hapBy) %>%
           mutate(pos = .data$pos + ifelse(dplyr::row_number()==2,dplyr::row_number()-1.5,dplyr::row_number()-1))
         non_reliable_alleles_text$size <- sapply(1:nrow(non_reliable_alleles_text), function(i) {
             if (non_reliable_alleles_text$freq[i] == 1) {
@@ -740,11 +736,11 @@ nonReliableAllelesText_V2 <- function(non_reliable_alleles_text, size = 3, map =
                                                           seq(0.125,1,by = 0.25)[1:4])))
     non_reliable_alleles_text$size = size
     if(!map){
-      non_reliable_alleles_text <- non_reliable_alleles_text %>% ungroup() %>% group_by(.data$gene, .data$subject, .data$hapBy) %>%
-      mutate(pos2 = .data$pos + 1 + ifelse(dplyr::row_number()==2,dplyr::row_number()-1.5,dplyr::row_number()-1))}
+      non_reliable_alleles_text <- non_reliable_alleles_text %>% dplyr::ungroup() %>% dplyr::group_by(.data$gene, .data$subject, .data$hapBy) %>%
+        dplyr::mutate(pos2 = .data$pos + 1 + ifelse(dplyr::row_number()==2,dplyr::row_number()-1.5,dplyr::row_number()-1))}
     else{
-      non_reliable_alleles_text <- non_reliable_alleles_text %>% ungroup() %>% group_by(.data$gene, .data$subject) %>%
-        mutate(pos = ifelse(.data$n == 1, 0.5,
+      non_reliable_alleles_text <- non_reliable_alleles_text %>% dplyr::ungroup() %>% dplyr::group_by(.data$gene, .data$subject) %>%
+        dplyr::mutate(pos = ifelse(.data$n == 1, 0.5,
                              ifelse(.data$n == 2, seq(0.25,1,by = 0.5)[1:max(dplyr::row_number())],
                                     ifelse(.data$n == 3, seq(0.165,1,by = 0.33)[1:max(dplyr::row_number())],
                                            seq(0.125,1,by = 0.25)[1:max(dplyr::row_number())]))))
@@ -775,7 +771,7 @@ novelAlleleAnnotation <- function(novel_allele, new_label, size = 3) {
                                ifelse(novel_allele$freq == 2, 0.5,
                                       ifelse(novel_allele$freq == 3, 0.33, 0.25)))
     novel_allele$size = size
-    novel_allele <- novel_allele %>% ungroup() %>% group_by(.data$gene, .data$subject, .data$hapBy) %>%
+    novel_allele <- novel_allele %>% dplyr::ungroup() %>% dplyr::group_by(.data$gene, .data$subject, .data$hapBy) %>%
       mutate(pos = ifelse(.data$n == 1, 0.5,
                           ifelse(.data$n == 2, seq(0.25,1,by = 0.5)[1:max(dplyr::row_number())],
                                  ifelse(.data$n == 3, seq(0.165,1,by = 0.33)[1:max(dplyr::row_number())],

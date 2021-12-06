@@ -28,7 +28,7 @@ deletionsByVpooled(
 
 \item{min_minor_fraction}{the minimum minor allele fraction to be used as an anchor gene. Default is 0.3}
 
-\item{kThreshDel}{the minimum lK (log10 of the Bayes factor) to call a deletion. Defualt is 3.}
+\item{kThreshDel}{the minimum lK (log10 of the Bayes factor) to call a deletion. Default is 3.}
 
 \item{nonReliable_Vgenes}{a list of known non reliable gene assignments. A \code{list} created by \code{nonReliableVGenes}.}
 }

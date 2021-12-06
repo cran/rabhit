@@ -6,8 +6,8 @@
 \usage{
 hapDendo(
   hap_table,
-  chain = c("IGH", "IGK", "IGL"),
-  gene_sort = c("name", "position"),
+  chain = c("IGH", "IGK", "IGL", "TRB", "TRA"),
+  genes_order = NULL,
   removeIGH = TRUE,
   mark_low_lk = TRUE,
   lk_cutoff = 1
@@ -16,16 +16,15 @@ hapDendo(
 \arguments{
 \item{hap_table}{haplotype summary table. See details.}
 
-\item{chain}{the IG chain: IGH,IGK,IGL. Default is IGH.}
+\item{chain}{the IG/TR chain: IGH,IGK,IGL,TRB. Default is IGH.}
 
-\item{gene_sort}{if by 'name' the genes in the output are ordered lexicographically,
-if by 'position' only functional genes are used and are ordered by their chromosomal location. Default is 'position'.}
+\item{genes_order}{A vector of the genes by the desired order. Default is by GENE.loc}
 
-\item{removeIGH}{if TRUE, 'IGH'\'IGK'\'IGL' prefix is removed from gene names. Defualt is TRUE.}
+\item{removeIGH}{if TRUE, 'IGH'\'IGK'\'IGL' prefix is removed from gene names. Default is TRUE.}
 
-\item{mark_low_lk}{if TRUE, a texture is add for low lK values. Defualt is TRUE.}
+\item{mark_low_lk}{if TRUE, a texture is add for low lK values. Default is TRUE.}
 
-\item{lk_cutoff}{the lK cutoff value to be considerd low for texture layer. Defualt is lK<1.}
+\item{lk_cutoff}{the lK cutoff value to be considerd low for texture layer. Default is lK<1.}
 }
 \value{
 A multitple samples visualization of the distances between haplotypes.
