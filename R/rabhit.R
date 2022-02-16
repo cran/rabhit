@@ -75,5 +75,6 @@
 #' @importFrom  splitstackshape  cSplit
 #' @importFrom  fastmatch        %fin%
 #' @importFrom  plyr             rbind.fill
+#' @importFrom  readr            read_tsv cols
 NULL
 

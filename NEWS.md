@@ -1,3 +1,11 @@
+Version 0.2.1: February 16, 2022
+-------------------------------------------------------------------------------
+
+General:
+
++ updated the package for changes in dependencies for the haplotype plots.
++ add a new function `readHaplotypeDb` for reading haplotype tables created from `createFullHaplotype`. For tables downloaded from VDJbase.org, reading the files into R is recommended with the new function.
+
 Version 0.1.6: June 10, 2020
 -------------------------------------------------------------------------------
 
