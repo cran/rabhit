@@ -12,7 +12,7 @@
 #'
 #' @name samples_db
 #' @docType data
-#' @format A \code{data.frame} in Change-O format (\url{https://changeo.readthedocs.io/en/version-0.4.1---airr-standards/standard.html}) containing the following columns:
+#' @format A \code{data.frame} in Change-O format (\url{https://changeo.readthedocs.io/en/stable/standard.html}) containing the following columns:
 #' \itemize{
 #'   \item \code{'SUBJECT'}: subject names
 #'   \item \code{'V_CALL'}: V allele call(s) (in an IMGT format)

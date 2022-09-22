@@ -286,13 +286,13 @@ parseHapTab <-
               alleles <- strsplit(panel.alleles[i], ",")[[1]]
               return(data.table::rbindlist(lapply(1:length(alleles), function(j) {
                 count_id <-
-                  which(strsplit(hap_table[i, 'alleles'], ',')[[1]] == alleles[j])
+                  which(strsplit(hap_table$alleles[i], ',')[[1]] == alleles[j])
                 return(
                   data.frame(
                     subject = sample_name,
                     gene = paste0(hap_table$gene[i], "*", alleles[j]),
                     hapBy = hapBy_alleles[panel],
-                    count = as.numeric(strsplit(hap_table[i, paste0("counts", count_id)], ",")[[1]][panel]),
+                    count = as.numeric(strsplit(hap_table[[paste0("counts", count_id)]][i], ",")[[1]][panel]),
                     stringsAsFactors = FALSE
                   )
                 )
@@ -517,20 +517,24 @@ sortDFByGene <-
     }
     chain <- match.arg(chain)
 
-    GENE.loc.tmp <- genes_order
-    names(GENE.loc.tmp) <- GENE.loc.tmp
     if (peseudo_remove) {
       DATA <- DATA[!grepl("OR|NL", DATA$gene), ]
       DATA <- DATA[!(DATA$gene %in% PSEUDO[[chain]]), ]
     }
-    DATA$gene <- factor(DATA$gene, levels = rev(GENE.loc.tmp))
+
+    DATA$order <-
+      fastmatch::fmatch(DATA$gene, genes_order)
+    DATA <- stats::na.omit(DATA, cols = "order")
+    DATA <- DATA[order(DATA$order),]
+
     if (removeIGH) {
-      GENE.loc.tmp <- gsub(chain, "", GENE.loc.tmp)
-      names(GENE.loc.tmp) <- GENE.loc.tmp
+      GENE.loc.tmp <- gsub(chain, "", genes_order)
       DATA$gene <- gsub(chain, "", DATA$gene)
       DATA$gene <- factor(DATA$gene, levels = rev(GENE.loc.tmp))
       if (!geno)
         DATA$hapBy <- gsub(chain, "", DATA$hapBy)
+    } else{
+      DATA$gene <- factor(DATA$gene, levels = rev(genes_order))
     }
 
     return(DATA)
@@ -791,12 +795,18 @@ alleleHapPalette <- function(hap_alleles, NRA = TRUE) {
                   perl = T)
   AlleleCol.tmp <-
     sort(unique(sapply(strsplit(Alleles, "_"), "[", 1)))
-  tmp.col <- ALLELE_PALETTE[AlleleCol.tmp]
+  ALLELE_PALETTE_specific <- ALLELE_PALETTE
+  if(any(!AlleleCol.tmp %in% names(ALLELE_PALETTE))){
+    missing_alleles <- AlleleCol.tmp[which(!AlleleCol.tmp %in% names(ALLELE_PALETTE))]
+    na_id <- which(names(ALLELE_PALETTE)=="NA")
+    names(ALLELE_PALETTE_specific)[na_id[1:length(missing_alleles)]] <- missing_alleles
+  }
+  tmp.col <- ALLELE_PALETTE_specific[AlleleCol.tmp]
 
 
   novels <- grep("_", Alleles, value = T)
   if (length(novels) > 0) {
-    novels.col <- ALLELE_PALETTE[sapply(strsplit(novels, "_"), "[", 1)]
+    novels.col <- ALLELE_PALETTE_specific[sapply(strsplit(novels, "_"), "[", 1)]
     names(novels.col) <- novels
     alleles.comb <-
       c(tmp.col, novels.col)[order(names(c(tmp.col, novels.col)))]
@@ -1317,9 +1327,15 @@ readHaplotypeDb <- function(file) {
   db <-
     suppressMessages(readr::read_tsv(file, col_types = types, na = c("", "NA", "None")))
 
-  # change columns to lowercase
-  lower_cols <- names(db)
-  db <- mutate_at(db, lower_cols, toupper)
+  # check alleles column, if numeric re-create the column
+  if(any(grepl(".", db[["alleles"]], fixed = T))){
 
-  return(db)
+    db[["alleles"]] <- sapply(1:nrow(db), function(i){
+      alleles <- grep("[0-9]",as.list(db[i,3:4]),value=T)
+      alleles <- unique(alleles)
+      paste0(alleles, collapse = ",")
+    })
+
+  }
+  return(as.data.frame(db))
 }

@@ -92,7 +92,7 @@ createFullHaplotype <-
     chain <- match.arg(chain)
 
     if (missing(toHap_GERM)){
-      cat("Missing toHap_GERM, using Default germline from GERM by the given chain")
+      message("Missing toHap_GERM, using Default germline from GERM by the given chain\n")
       toHap_GERM <-  unlist(unname(GERM[[chain]][toHap_col]))
     }
 
@@ -135,7 +135,7 @@ createFullHaplotype <-
             paste0(
               "For sample ",
               sample_name,
-              ", cannot haplotype by more or less than two alleles"
+              ", cannot haplotype by more or less than two alleles\n"
             )
           )
           next()

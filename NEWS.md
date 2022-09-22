@@ -1,3 +1,17 @@
+Version 0.2.4: September 14, 2022
+-------------------------------------------------------------------------------
+
+General:
+
++ Generalized the createFullHaplotype to allow other genes as anchor.
+
+Version 0.2.3: March 14, 2022
+-------------------------------------------------------------------------------
+
+General:
+
++ Fixed a bug in the haplotype plot, cases where a gene is within the haplotype table but not in the gene_order flag.
+
 Version 0.2.1: February 16, 2022
 -------------------------------------------------------------------------------
 
