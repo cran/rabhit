@@ -1,7 +1,7 @@
 Package: rabhit
 Type: Package
 Title: Inference Tool for Antibody Haplotype
-Version: 0.2.4
+Version: 0.2.5
 Authors@R: c(person("Ayelet", "Peres", role=c("aut","cre"), 
                     email="peresay@biu.ac.il"),
             person("Moriah", "Gidoni", role=c("aut"), 
@@ -31,14 +31,14 @@ Imports: dplyr (>= 1.0.0), reshape2 (>= 1.4.3), plotly (>= 4.7.1),
         1.1.2), tidyr (>= 1.0.0), stringi (>= 1.4.3), grid (>= 3.4.4),
         splitstackshape (>= 1.4.8), fastmatch (>= 1.1.0)
 Suggests: knitr, rmarkdown, stats, graphics, grDevices
-RoxygenNote: 7.2.0
+RoxygenNote: 7.2.1
 NeedsCompilation: no
 Collate: 'Data.R' 'rabhit.R' 'internal_functions.R' 'functions.R'
         'graphic_functions.R' 'zzz.R'
-Packaged: 2022-09-20 07:58:55 UTC; ayelet
+Packaged: 2023-02-06 11:55:32 UTC; ayelet
 Author: Ayelet Peres [aut, cre],
   Moriah Gidoni [aut],
   Gur Yaari [aut, cph]
 Maintainer: Ayelet Peres <peresay@biu.ac.il>
 Repository: CRAN
-Date/Publication: 2022-09-22 15:10:02 UTC
+Date/Publication: 2023-02-06 13:32:31 UTC

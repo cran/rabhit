@@ -50,13 +50,13 @@
 #' @importFrom  cowplot          get_legend plot_grid ggdraw draw_label background_grid
 #' @importFrom  gridExtra        arrangeGrob
 #' @importFrom  dplyr            do n desc funs %>% distinct
-#'                               as_data_frame data_frame data_frame_
+#'                               as_data_frame data_frame
 #'                               bind_cols bind_rows combine rowwise slice
-#'                               filter filter_ select select_ arrange arrange_
-#'                               group_by group_by_ ungroup
-#'                               mutate mutate_ summarize summarize_
-#'                               mutate_at summarize_at count_ count
-#'                               rename rename_ transmute transmute_ pull ungroup row_number
+#'                               filter select arrange
+#'                               group_by ungroup
+#'                               mutate summarize
+#'                               mutate_at summarize_at count
+#'                               rename transmute pull ungroup row_number
 #' @importFrom  data.table       := rbindlist data.table .N setDT CJ setorderv setkey .SD
 #' @importFrom  reshape2         melt
 #' @importFrom  gtools           ddirichlet

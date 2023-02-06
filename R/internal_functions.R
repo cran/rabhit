@@ -1332,7 +1332,7 @@ readHaplotypeDb <- function(file) {
 
     db[["alleles"]] <- sapply(1:nrow(db), function(i){
       alleles <- grep("[0-9]",as.list(db[i,3:4]),value=T)
-      alleles <- unique(alleles)
+      alleles <- unique(strsplit(alleles, split = ",")[[1]])
       paste0(alleles, collapse = ",")
     })
 

@@ -69,7 +69,7 @@ plotHaplotype <-
       haplo.db <-
         parseHapTab(
           hap_table[hap_table$subject == sample_name &
-                      grepl(chain, hap_table$gene), ],
+                      grepl(chain, hap_table$gene),],
           chain = chain,
           sample_name = sample_name,
           hapBy_cols = hapBy_cols,
@@ -115,7 +115,7 @@ plotHaplotype <-
         geno.df$freq <-
           ifelse(geno.df$n == 2, 0.5, ifelse(geno.df$n != 1, 0.25, 1))
         non_reliable_alleles_text <-
-          nonReliableAllelesText_V2(non_reliable_alleles_text = geno.df[grep("[0-9][0-9]_[0-9][0-9]", geno.df$alleles), ])
+          nonReliableAllelesText_V2(non_reliable_alleles_text = geno.df[grep("[0-9][0-9]_[0-9][0-9]", geno.df$alleles),])
       } else {
         non_reliable_alleles_text <- c()
       }
@@ -272,7 +272,7 @@ plotHaplotype <-
           axis.text = element_text(colour = "black"),
           text = element_text(size = text_size),
           plot.margin = unit(c(0.25,
-                               0, -0.05, 0), "cm"),
+                               0,-0.05, 0), "cm"),
           panel.background = element_blank(),
           legend.key = element_rect("#DCDCDC")
         ) +
@@ -292,7 +292,7 @@ plotHaplotype <-
         non_reliable_alleles_text$count2 <-
           count.df$count2[count.df$alleles == "NRA"]
         non_reliable_alleles_text <-
-          non_reliable_alleles_text[non_reliable_alleles_text$count2 != 0, ]
+          non_reliable_alleles_text[non_reliable_alleles_text$count2 != 0,]
         non_reliable_alleles_text$hjust <-
           ifelse(non_reliable_alleles_text$count2 >= 0, 0, 1)
         p2 <-
@@ -428,7 +428,7 @@ plotHaplotype <-
                        "<br />Allele: ",
                        allele,
                        "<br />Count: ",
-                       count[1, ])
+                       count[1,])
             }
           }
           return(labels)
@@ -657,11 +657,11 @@ plotHaplotype <-
           gp <- ggplotGrob(p)
           # Add a row below the 2nd from the bottom
           gp <-
-            gtable::gtable_add_rows(gp, unit(2, "grobheight", lab), -2)
+            gtable::gtable_add_rows(gp, unit(2, "grobheight", lab),-2)
 
           # Add 'lab' grob to that row, under the plot panel
           gp <-
-            gtable::gtable_add_grob(gp, lab, t = -2, l = gp$layout[gp$layout$name == "panel",]$l)
+            gtable::gtable_add_grob(gp, lab, t = -2, l = gp$layout[gp$layout$name == "panel", ]$l)
 
           plot_list[[sample_name]] <- gp
         } else{
@@ -836,7 +836,7 @@ hapHeatmap <-
     hap_table$order <-
       fastmatch::fmatch(hap_table$gene, genes_order)
     hap_table <- stats::na.omit(hap_table, cols = "order")
-    hap_table <- hap_table[order(order),]
+    hap_table <- hap_table[order(order), ]
     if (removeIGH) {
       hap_table$gene <- gsub(chain, "", hap_table$gene)
       hap_table$gene <-
@@ -1159,7 +1159,7 @@ hapHeatmap <-
 
     # draw lines for low lk values
     sub_geno = panels_m[panels_m$hapBy == hapBy_cols[1] &
-                          panels_m$k < lk_cutoff,]
+                          panels_m$k < lk_cutoff, ]
     if (nrow(sub_geno) > 0) {
       NR = samples_n
       NC = genes_n * 12
@@ -1174,7 +1174,7 @@ hapHeatmap <-
     ids_text <-
       !grepl('^[0-9]|Del|Unk', panels_m$text_bottom)
     if (any(ids_text)) {
-      sub_geno = panels_m[panels_m$hapBy == hapBy_cols[1] & ids_text,]
+      sub_geno = panels_m[panels_m$hapBy == hapBy_cols[1] & ids_text, ]
 
       NR = samples_n
       NC = genes_n * 12
@@ -1229,7 +1229,7 @@ hapHeatmap <-
     # draw lines for low lk values
 
     sub_geno = panels_m[panels_m$hapBy == hapBy_cols[2] &
-                          panels_m$k < lk_cutoff,]
+                          panels_m$k < lk_cutoff, ]
     if (nrow(sub_geno) > 0) {
       NR = samples_n
       NC = genes_n * 12
@@ -1242,7 +1242,7 @@ hapHeatmap <-
 
     # ad text annotations
     sub_geno = panels_m[panels_m$hapBy == hapBy_cols[2] &
-                          ids_text,]
+                          ids_text, ]
     if (nrow(sub_geno) > 0) {
       NR = samples_n
       NC = genes_n * 12
@@ -1277,7 +1277,7 @@ hapHeatmap <-
     NC = genes_n * 12
     names(allele_code) <- allele_palette$AlleleCol
     invisible(tapply(allele_code, names(allele_code), function(x) {
-      ii = which(m2 == x + 1, arr.ind = T)[1,]
+      ii = which(m2 == x + 1, arr.ind = T)[1, ]
       I = ii[[1]] - 1              # row index
       J = ii[[2]]                # column index
       ALLELE =  1                # allele index
@@ -1461,7 +1461,7 @@ hapDendo <-
     for (sample_name in samples) {
       haplo.db <-
         parseHapTab(
-          hap_table[hap_table$subject == sample_name, ],
+          hap_table[hap_table$subject == sample_name,],
           chain = chain,
           count_df = F,
           sample_name = sample_name,
@@ -1530,7 +1530,7 @@ hapDendo <-
       if (haplo_db_clust$k[i] < lk_cutoff &&
           !haplo_db_clust$alleles[i] %in% c("Unk", "Del", "NR")) {
         tmp_point <-
-          haplo_db_clust[i, ] %>% slice(rep(1, each = ifelse(length(samples) < 4, 15, 8))) %>%
+          haplo_db_clust[i,] %>% slice(rep(1, each = ifelse(length(samples) < 4, 15, 8))) %>%
           mutate(
             points = seq(0, 0.9, length.out = ifelse(length(samples) < 4, 15, 8)),
             yend = seq(0, 0.9, length.out = ifelse(length(samples) < 4, 15, 8)) + 0.1,
@@ -1550,8 +1550,8 @@ hapDendo <-
     samples_label <- c()
     for (i in 1:length(samples)) {
       samp = samples[i]
-      sub <- haplo_db_clust[haplo_db_clust$subject == samp, ]
-      sub2 <- sub[sub$hapBy == allele_cols[1], ]
+      sub <- haplo_db_clust[haplo_db_clust$subject == samp,]
+      sub2 <- sub[sub$hapBy == allele_cols[1],]
       sub2$freq <- 0
       sub2$grouper_y <- paste0(sub2$subject[1], " NA")
       if (i != length(samples)) {
@@ -1575,7 +1575,7 @@ hapDendo <-
     if (length(grep("[0-9][0-9]_[0-9][0-9]", heatmap.df$alleles)) != 0) {
       non_reliable_alleles_text <-
         nonReliableAllelesText(heatmap.df[!grepl("NA", heatmap.df$grouper_y) &
-                                            grepl("[0-9][0-9]_[0-9][0-9]", heatmap.df$alleles), ], size = 3)
+                                            grepl("[0-9][0-9]_[0-9][0-9]", heatmap.df$alleles),], size = 3)
       non_reliable_alleles_text$grouper_y <-
         factor(non_reliable_alleles_text$grouper_y, levels = samples_order)
       heatmap.df$alleles[grep("[0-9][0-9]_[0-9][0-9]", heatmap.df$alleles)] <-
@@ -1654,7 +1654,7 @@ hapDendo <-
       haplo_db_clust_texture$grouper_y <-
         factor(haplo_db_clust_texture$grouper_y, levels = samples_order)
       haplo_db_clust_texture <-
-        haplo_db_clust_texture[!duplicated(haplo_db_clust_texture[, c("gene", "alleles", "k", "points", "subject")]), ]
+        haplo_db_clust_texture[!duplicated(haplo_db_clust_texture[, c("gene", "alleles", "k", "points", "subject")]),]
       haplo_db_clust_texture$col <- paste0("lk<", lk_cutoff)
       # Get Allele legend
       gt1 = ggplotGrob(hap_plot)
@@ -1964,8 +1964,9 @@ deletionHeatmap <-
     hap_table$k2[is.na(hap_table$k2)] <- 0
 
     hap_table.del.heatmap <-
-      hap_table %>% rowwise %>% dplyr::mutate(k = max(as.numeric(.data$k1), as.numeric(.data$k2), na.rm = T)) %>% select_(.dots = c("subject", "gene",
-                                                                                                                                    ALLELE_01_col, "k"))
+      hap_table %>% rowwise %>% dplyr::mutate(k = max(as.numeric(.data$k1),
+                                                      as.numeric(.data$k2), na.rm = T)) %>%
+      select(!!as.name("subject"), !!as.name("gene"),!!as.name(ALLELE_01_col), !!as.name("k"))
 
     hap_table.del.heatmap$HapBy <-
       rep(ALLELE_01_num, nrow(hap_table.del.heatmap))
@@ -1978,7 +1979,7 @@ deletionHeatmap <-
           hap_table %>% rowwise %>% dplyr::mutate(k = max(
             as.numeric(.data$k1), as.numeric(.data$k2), na.rm = T
           )) %>%
-            select_(.dots = c("subject", "gene", ALLELE_02_col, "k")),
+            select(!!as.name("subject"), !!as.name("gene"),!!as.name(ALLELE_02_col), !!as.name("k")),
           HapBy = ALLELE_02_num
         )
       )
@@ -2005,9 +2006,9 @@ deletionHeatmap <-
 
     # manual reshape
     hap_table.del.heatmap.02 <-
-      hap_table.del.heatmap[hap_table.del.heatmap$HapBy == ALLELE_01_num, ]
+      hap_table.del.heatmap[hap_table.del.heatmap$HapBy == ALLELE_01_num,]
     hap_table.del.heatmap.03 <-
-      hap_table.del.heatmap[hap_table.del.heatmap$HapBy == ALLELE_02_num, ]
+      hap_table.del.heatmap[hap_table.del.heatmap$HapBy == ALLELE_02_num,]
     hap_table.del.heatmap.02$gene2 <-
       gsub(chain, "", hap_table.del.heatmap.02$gene)
     hap_table.del.heatmap.03$gene2 <-
@@ -2058,7 +2059,7 @@ deletionHeatmap <-
       heatmap.plot <-
         ggplot(data = heatmap.df, aes_string(x = "gene2", y = "subject")) +
         theme_bw() + geom_tile(aes_string(fill = "del")) +
-        facet_wrap(~ HapBy, nrow = 2) + scale_x_discrete(drop = FALSE) +
+        facet_wrap( ~ HapBy, nrow = 2) + scale_x_discrete(drop = FALSE) +
         scale_fill_manual(
           name = "lK",
           labels = c(
@@ -2169,7 +2170,7 @@ deletionHeatmap <-
       heatmap.plot <-
         ggplot(data = heatmap.df, aes_string(x = "gene2", y = "subject", text = "text")) +
         theme_bw() + geom_tile(aes_string(fill = "del")) +
-        facet_wrap(~ HapBy, nrow = 2) + scale_x_discrete(drop = FALSE) +
+        facet_wrap( ~ HapBy, nrow = 2) + scale_x_discrete(drop = FALSE) +
         scale_fill_manual(
           name = "",
           labels = lk_labels,
